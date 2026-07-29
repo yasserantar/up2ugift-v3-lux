@@ -12,3 +12,5 @@ venv/
 env/
 .venv/
 virtualenv/
+
+/src/generated/prisma

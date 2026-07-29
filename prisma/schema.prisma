@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Gift {
+  id            String   @id @default(cuid())
+  giftId        String   @unique // Unique short ID for the URL (e.g. up2ugift.com/g/a1b2c3)
+  senderName    String
+  recipientName String
+  message       String
+  amount        Float
+  status        String   @default("PENDING") // PENDING, PAID, DELIVERED
+  paymentId     String?  // Lemon Squeezy order ID
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}

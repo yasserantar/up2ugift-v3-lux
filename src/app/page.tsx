@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, Gift, Heart, Star, Crown, GraduationCap, Map, Users, ArrowLeft, CheckCircle2, User, FileText, CreditCard, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { createGiftAction } from "./actions/gift";
 
 const occasions = [
   { id: "friend", title: "إلى صديق / صديقة", icon: Users },
@@ -40,7 +41,7 @@ export default function Home() {
   const [paymentState, setPaymentState] = useState<"idle" | "processing" | "success">("idle");
   const [generatedLink, setGeneratedLink] = useState("");
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (!senderName || !recipientName) {
       alert("يرجى إدخال اسم المرسل والمستلم");
       return;
@@ -48,20 +49,36 @@ export default function Home() {
     
     setPaymentState("processing");
     
-    // Simulate real API payment delay
-    setTimeout(() => {
+    // Create gift in database
+    const res = await createGiftAction({
+      senderName,
+      recipientName,
+      message,
+      amount: parseInt(selectedCategory) || 50, // default to 50 if digital
+    });
+
+    if (res.success) {
       setPaymentState("success");
       
-      const params = new URLSearchParams({
-        template: selectedOccasion,
-        category: selectedCategory,
-        sender: senderName,
-        recipient: recipientName,
-        msg: message
+      // Call Checkout API
+      const checkoutRes = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: parseInt(selectedCategory) || 50, giftId: res.giftId })
       });
       
-      setGeneratedLink(`/gift/preview?${params.toString()}`);
-    }, 2500);
+      const checkoutData = await checkoutRes.json();
+      
+      if (checkoutData.url) {
+        window.location.href = checkoutData.url;
+      } else {
+        alert("حدث خطأ في بوابة الدفع");
+        setPaymentState("idle");
+      }
+    } else {
+      alert("حدث خطأ أثناء المعالجة");
+      setPaymentState("idle");
+    }
   };
 
   return (
@@ -81,7 +98,7 @@ export default function Home() {
           <span className="font-bold text-xl tracking-wider text-white">UP2U<span className="text-[#BF953F]">GIFT</span></span>
         </div>
         <div className="text-sm font-medium text-gray-400 hover:text-white transition cursor-pointer">
-          دخول الأعضاء
+          <Link href="/admin/login">دخول الأعضاء</Link>
         </div>
       </nav>
 

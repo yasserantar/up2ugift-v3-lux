@@ -13,6 +13,8 @@ export const metadata: Metadata = {
   description: "الجيل الجديد من الهدايا الرقمية والتجارب التفاعلية",
 };
 
+import { Providers } from "@/components/Providers";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -21,7 +23,9 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <body className={`${alexandria.variable} font-sans antialiased bg-[#FAF9F6] text-[#1A1A1A]`}>
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );
