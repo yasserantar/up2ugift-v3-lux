@@ -1,16 +1,23 @@
 import type { Metadata } from "next";
-import { Tajawal } from "next/font/google";
+import { Cairo, Inter } from "next/font/google";
 import "./globals.css";
+import { LanguageProvider } from "@/context/LanguageContext";
 
-const tajawal = Tajawal({
+const cairo = Cairo({
   subsets: ["arabic"],
-  weight: ["300", "400", "500", "700"],
-  variable: "--font-tajawal",
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-cairo",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
   title: "Up2UGift | هدايا تصنع الفرح",
-  description: "الجيل الجديد من الهدايا الرقمية الاستثنائية",
+  description: "منصة إهداء تصنع البهجة في لحظات من تحب",
 };
 
 export default function RootLayout({
@@ -19,11 +26,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="rtl" className={tajawal.variable}>
-      <body className="font-sans antialiased text-white selection:bg-indigo-500/30">
-        <div className="orb-1"></div>
-        <div className="orb-2"></div>
-        {children}
+    <html lang="ar">
+      <body className={`${cairo.variable} ${inter.variable} antialiased text-gray-800 selection:bg-pink-500/30 bg-[#FFFBF7]`}>
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   );
