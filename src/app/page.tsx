@@ -68,7 +68,7 @@ export default function Home() {
         amount: selectedCategory === "digital" ? 0 : 50,
       });
 
-      if (res.success) {
+      if (res.success && res.giftId) {
         setGeneratedLink(res.giftId);
         setPaymentState("success");
       } else {

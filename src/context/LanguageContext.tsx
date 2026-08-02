@@ -33,11 +33,9 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("lang", newLang);
   };
 
-  if (!mounted) return <>{children}</>;
-
   return (
     <LanguageContext.Provider value={{ lang, t: lang === "ar" ? ar : en, toggleLanguage }}>
-      <div dir={lang === "ar" ? "rtl" : "ltr"} className={lang === "ar" ? "font-cairo" : "font-inter"}>
+      <div dir={lang === "ar" ? "rtl" : "ltr"} className={lang === "ar" ? "font-cairo" : "font-inter"} style={{ visibility: mounted ? "visible" : "hidden" }}>
         {children}
       </div>
     </LanguageContext.Provider>
