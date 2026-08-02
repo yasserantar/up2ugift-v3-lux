@@ -1,19 +1,17 @@
 import type { Metadata } from "next";
-import { Alexandria } from "next/font/google";
+import { Tajawal } from "next/font/google";
 import "./globals.css";
 
-const alexandria = Alexandria({
-  variable: "--font-alexandria",
+const tajawal = Tajawal({
   subsets: ["arabic"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: ["300", "400", "500", "700"],
+  variable: "--font-tajawal",
 });
 
 export const metadata: Metadata = {
-  title: "Up2uGift - منصة الهدايا الفاخرة",
-  description: "الجيل الجديد من الهدايا الرقمية والتجارب التفاعلية",
+  title: "Up2UGift | هدايا تصنع الفرح",
+  description: "الجيل الجديد من الهدايا الرقمية الاستثنائية",
 };
-
-import { Providers } from "@/components/Providers";
 
 export default function RootLayout({
   children,
@@ -21,11 +19,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="rtl">
-      <body className={`${alexandria.variable} font-sans antialiased bg-[#FAF9F6] text-[#1A1A1A]`}>
-        <Providers>
-          {children}
-        </Providers>
+    <html lang="ar" dir="rtl" className={tajawal.variable}>
+      <body className="font-sans antialiased text-white selection:bg-indigo-500/30">
+        <div className="orb-1"></div>
+        <div className="orb-2"></div>
+        {children}
       </body>
     </html>
   );
