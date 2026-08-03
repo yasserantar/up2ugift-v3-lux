@@ -7,108 +7,140 @@
 
 @layer base {
   :root {
-    --background: #FFFBF7;
-    --foreground: #2D3748;
+    --background: #faf8f6;
+    --foreground: #1c1917;
     
-    --card: #FFFFFF;
-    --card-foreground: #2D3748;
+    --card: rgba(255, 255, 255, 0.7);
+    --card-border: rgba(255, 255, 255, 0.6);
+    --card-shadow: 0 8px 32px 0 rgba(142, 107, 85, 0.07);
     
-    --border: rgba(0, 0, 0, 0.05);
-    --border-hover: rgba(0, 0, 0, 0.1);
-    
-    --primary: #FF708D; /* Warm Pink */
-    --primary-foreground: #FFFFFF;
-    
-    --accent: #FFD166; /* Joyful Yellow */
+    --primary: #f43f5e;
+    --primary-hover: #e11d48;
   }
 }
 
+/* Beautiful Animated Gradient Mesh Background */
 body {
   background-color: var(--background);
   color: var(--foreground);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  position: relative;
 }
 
-/* Warm Gifting Card */
-.gift-card {
+/* Luxury mesh background simulation with high performance CSS */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -10;
+  background: 
+    radial-gradient(at 0% 0%, rgba(244, 63, 94, 0.08) 0px, transparent 50%),
+    radial-gradient(at 50% 0%, rgba(245, 158, 11, 0.06) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.07) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(244, 63, 94, 0.04) 0px, transparent 50%);
+  filter: blur(40px);
+  animation: meshAnim 25s ease infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes meshAnim {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+/* Glassmorphism Panel */
+.glass-panel {
   background: var(--card);
-  border: 1px solid var(--border);
-  box-shadow: 0 10px 40px rgba(255, 112, 141, 0.06);
-  border-radius: 2rem;
-  transition: all 0.3s ease;
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  border-radius: 2.25rem;
 }
 
-.gift-card:hover {
-  border-color: var(--border-hover);
-  box-shadow: 0 15px 50px rgba(255, 112, 141, 0.12);
-}
-
-/* Joyful Input */
-.joy-input {
-  background: #F7FAFC;
-  border: 2px solid transparent;
-  color: #2D3748;
+/* Elegant High-End Input styling */
+.premium-input {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1.5px solid rgba(28, 25, 23, 0.08);
+  color: #1c1917;
   border-radius: 1.25rem;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  font-weight: 500;
 }
 
-.joy-input:focus {
-  background: #FFFFFF;
-  border-color: #FF708D;
-  box-shadow: 0 0 0 4px rgba(255, 112, 141, 0.1);
+.premium-input:focus {
+  background: #ffffff;
+  border-color: #f43f5e;
+  box-shadow: 0 0 0 4px rgba(244, 63, 94, 0.1);
   outline: none;
 }
 
-/* Animated Gradient Text */
-.gradient-text {
-  background: linear-gradient(135deg, #FF708D 0%, #FF9472 100%);
+/* Text Gradients */
+.gold-gradient-text {
+  background: linear-gradient(135deg, #1c1917 20%, #f43f5e 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-}
-
-.gradient-text-accent {
-  background: linear-gradient(135deg, #FFD166 0%, #FF9472 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Ambient Glow Orbs - Warm & Soft */
-.orb-1 {
-  position: absolute;
-  width: 700px;
-  height: 700px;
-  background: radial-gradient(circle, rgba(255, 112, 141, 0.08) 0%, rgba(255,255,255,0) 70%);
-  top: -15%;
-  left: -15%;
-  z-index: -1;
-  pointer-events: none;
-}
-
-.orb-2 {
-  position: absolute;
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(255, 209, 102, 0.1) 0%, rgba(255,255,255,0) 70%);
-  bottom: -10%;
-  right: -10%;
-  z-index: -1;
-  pointer-events: none;
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 112, 141, 0.2);
+  background: rgba(244, 63, 94, 0.15);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 112, 141, 0.4);
+  background: rgba(244, 63, 94, 0.3);
+}
+
+/* Interactive Card elements */
+.occasion-card {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+}
+.occasion-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  background: #ffffff;
+  border-color: rgba(244, 63, 94, 0.25);
+  box-shadow: 0 12px 30px rgba(244, 63, 94, 0.06);
+}
+
+.category-card {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+}
+.category-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  background: #ffffff;
+  border-color: rgba(244, 63, 94, 0.25);
+  box-shadow: 0 12px 30px rgba(244, 63, 94, 0.06);
+}
+
+/* Loading animations */
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.05);
+  }
+}
+.pulse-glow {
+  animation: pulseGlow 2s infinite ease-in-out;
 }

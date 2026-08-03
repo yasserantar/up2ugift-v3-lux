@@ -2,11 +2,12 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, CheckCircle2, CreditCard, Loader2, Apple, Globe } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, CreditCard, Loader2, Sparkles, Globe } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createGiftAction } from "./actions/gift";
 import { useLanguage } from "@/context/LanguageContext";
+import { arAI, enAI } from "@/dictionaries/aiTemplates";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -15,20 +16,20 @@ function cn(...inputs: ClassValue[]) {
 }
 
 const occasionsList = [
-  { id: "friend", emoji: "💝", dictKey: "friend" },
-  { id: "family", emoji: "🏡", dictKey: "family" },
-  { id: "eid", emoji: "🌙", dictKey: "eid" },
-  { id: "birthday", emoji: "🎂", dictKey: "birthday" },
-  { id: "national", emoji: "🇸🇦", dictKey: "national" },
-  { id: "graduation", emoji: "🎓", dictKey: "graduation" },
-  { id: "quran", emoji: "📖", dictKey: "quran" },
-  { id: "kids", emoji: "🧸", dictKey: "kids" },
+  { id: "friend", icon: "💝", dictKey: "friend" },
+  { id: "family", icon: "🏡", dictKey: "family" },
+  { id: "eid", icon: "🌙", dictKey: "eid" },
+  { id: "birthday", icon: "🎂", dictKey: "birthday" },
+  { id: "national", icon: "🇸🇦", dictKey: "national" },
+  { id: "graduation", icon: "🎓", dictKey: "graduation" },
+  { id: "quran", icon: "📖", dictKey: "quran" },
+  { id: "kids", icon: "🧸", dictKey: "kids" },
 ];
 
 const categoriesList = [
-  { id: "digital", emoji: "💌", dictKey: "digital" },
-  { id: "vouchers", emoji: "🛍️", dictKey: "vouchers" },
-  { id: "subscriptions", emoji: "🍿", dictKey: "subscriptions" },
+  { id: "digital", icon: "✉️", dictKey: "digital" },
+  { id: "vouchers", icon: "🎁", dictKey: "vouchers" },
+  { id: "subscriptions", icon: "📺", dictKey: "subscriptions" },
 ];
 
 export default function Home() {
@@ -37,7 +38,6 @@ export default function Home() {
   const isRtl = lang === "ar";
 
   const [step, setStep] = useState(1);
-  
   const [selectedOccasion, setSelectedOccasion] = useState(occasionsList[0].id);
   const [selectedCategory, setSelectedCategory] = useState(categoriesList[1].id);
   
@@ -45,21 +45,47 @@ export default function Home() {
   const [recipientName, setRecipientName] = useState("");
   const [message, setMessage] = useState("");
 
+  const [isGeneratingMessage, setIsGeneratingMessage] = useState(false);
   const [paymentState, setPaymentState] = useState<"idle" | "processing" | "success">("idle");
   const [generatedLink, setGeneratedLink] = useState("");
 
   const handleNext = () => {
     if (step === 2 && (!senderName || !recipientName)) {
-      alert(t.recipient_placeholder); // Simple fallback alert
+      alert(lang === "ar" ? "الرجاء كتابة الأسماء أولاً" : "Please fill in the names first");
       return;
     }
     setStep((prev) => prev + 1);
   };
 
+  const handleGenerateAI = () => {
+    setIsGeneratingMessage(true);
+    setMessage(""); // clear first
+    
+    // Simulate typing speed and AI logic
+    const templates = isRtl ? arAI : enAI;
+    const occasionTemplates = templates[selectedOccasion as keyof typeof templates] || templates.friend;
+    const randomMessage = occasionTemplates[Math.floor(Math.random() * occasionTemplates.length)];
+
+    let currentText = "";
+    let index = 0;
+    
+    setTimeout(() => {
+      setIsGeneratingMessage(false);
+      const interval = setInterval(() => {
+        if (index < randomMessage.length) {
+          currentText += randomMessage[index];
+          setMessage(currentText);
+          index++;
+        } else {
+          clearInterval(interval);
+        }
+      }, 35);
+    }, 1200); // simulation time
+  };
+
   const handleCheckout = async () => {
     setPaymentState("processing");
     
-    // Simulate payment delay
     setTimeout(async () => {
       const res = await createGiftAction({
         senderName,
@@ -72,100 +98,107 @@ export default function Home() {
         setGeneratedLink(res.giftId);
         setPaymentState("success");
       } else {
-        alert("Error occurred");
+        alert(lang === "ar" ? "حدث خطأ أثناء حفظ الهدية" : "An error occurred while saving the gift");
         setPaymentState("idle");
       }
-    }, 1500);
+    }, 1800);
   };
 
-  // Softer bounce animations
+  // Ultra smooth page transition variants
   const slideVariants = {
-    initial: { opacity: 0, x: isRtl ? 20 : -20 },
-    animate: { opacity: 1, x: 0 },
-    exit: { opacity: 0, x: isRtl ? -20 : 20 }
+    initial: { opacity: 0, y: 15 },
+    animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
+    exit: { opacity: 0, y: -15, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] } }
   };
 
   const ArrowIcon = isRtl ? ArrowLeft : ArrowRight;
 
   return (
-    <div className="relative min-h-screen">
-      <div className="orb-1"></div>
-      <div className="orb-2"></div>
-      
-      {/* Top Navbar */}
-      <nav className="relative z-20 w-full p-6 flex justify-between items-center max-w-7xl mx-auto">
-        <div className="flex items-center gap-2">
-          <div className="text-3xl">🎁</div>
-          <span className="font-bold text-xl tracking-wider text-gray-800">UP2UGIFT</span>
+    <div className="relative min-h-screen pb-24">
+      {/* Header bar */}
+      <header className="w-full py-6 px-6 md:px-12 flex justify-between items-center max-w-7xl mx-auto relative z-20">
+        <div className="flex items-center gap-2 select-none">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-500 to-amber-400 flex items-center justify-center text-white shadow-md font-bold text-xl">
+            U
+          </div>
+          <span className="font-extrabold text-xl tracking-tight text-stone-800">Up2UGift</span>
         </div>
         <div className="flex items-center gap-4">
           <button 
             onClick={toggleLanguage} 
-            className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white shadow-sm hover:shadow-md transition-all text-sm font-bold text-gray-700"
+            className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/70 backdrop-blur-md border border-stone-200/50 shadow-sm hover:bg-white transition-all text-xs font-bold text-stone-700 cursor-pointer"
           >
-            <Globe className="w-4 h-4 text-pink-400" />
-            {lang === "ar" ? "EN" : "عربي"}
+            <Globe className="w-3.5 h-3.5 text-rose-500" />
+            {lang === "ar" ? "English" : "العربية"}
           </button>
-          <div className="text-sm font-semibold text-gray-500 hover:text-pink-500 transition cursor-pointer">
-            <Link href="/admin/login">{t.login}</Link>
-          </div>
+          <Link href="/admin/login" className="text-xs font-bold text-stone-500 hover:text-stone-800 transition">
+            {t.login}
+          </Link>
         </div>
-      </nav>
+      </header>
 
-      <main className="relative z-10 flex flex-col items-center pt-8 pb-32 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
-        
-        {/* Header */}
+      {/* Main content container */}
+      <main className="max-w-3xl mx-auto px-6 relative z-10 pt-4">
+        {/* Intro Section */}
         <motion.div 
-          initial={{ opacity: 0, y: 15 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, type: "spring", bounce: 0.4 }}
-          className="text-center w-full mb-12"
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center mb-10"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-pink-200 bg-pink-50 mb-6">
-            <span className="text-sm">✨</span>
-            <span className="text-sm font-bold tracking-wide text-pink-600">{t.hero_badge}</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/5 border border-rose-500/10 mb-4">
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+            <span className="text-[11px] font-bold text-rose-600 tracking-wider uppercase">{t.hero_badge}</span>
           </div>
-          
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 leading-tight text-gray-800 tracking-tight">
-            {t.hero_title_1} <br />
-            <span className="gradient-text">{t.hero_title_2}</span>
+          <h1 className="text-4xl md:text-5xl font-black text-stone-850 leading-tight tracking-tight">
+            {t.hero_title_1} <br/>
+            <span className="bg-gradient-to-r from-rose-500 to-amber-500 bg-clip-text text-transparent">{t.hero_title_2}</span>
           </h1>
-          <p className="text-lg text-gray-500 max-w-2xl mx-auto font-medium mt-4">
+          <p className="text-sm text-stone-500 max-w-lg mx-auto mt-4 font-medium leading-relaxed">
             {t.hero_desc}
           </p>
         </motion.div>
 
-        {/* Stepper Form */}
-        <div className="w-full relative gift-card p-6 md:p-10 z-20">
+        {/* Stepper Card */}
+        <div className="w-full glass-panel p-6 md:p-10 relative overflow-hidden">
           
-          {/* Progress Bar */}
-          <div className="w-full flex justify-between mb-10 relative px-4">
-            <div className="absolute top-1/2 left-4 right-4 h-[4px] bg-gray-100 -z-10 -translate-y-1/2 rounded-full"></div>
+          {/* Subtle horizontal light ray */}
+          <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-rose-500/20 to-transparent"></div>
+
+          {/* Stepper Indicator */}
+          <div className="w-full flex justify-between items-center mb-8 relative max-w-md mx-auto">
+            <div className="absolute left-0 right-0 h-[2px] bg-stone-200/50 top-1/2 -translate-y-1/2 -z-10 rounded-full"></div>
             <div 
               className={cn(
-                "absolute top-1/2 h-[4px] bg-pink-400 -z-10 -translate-y-1/2 rounded-full transition-all duration-500 ease-out",
-                isRtl ? "right-4" : "left-4"
-              )} 
+                "absolute h-[2.5px] bg-rose-500 top-1/2 -translate-y-1/2 -z-10 rounded-full transition-all duration-500 ease-out",
+                isRtl ? "right-0" : "left-0"
+              )}
               style={{ width: `${((step - 1) / 2) * 100}%` }}
             ></div>
             
             {[1, 2, 3].map((num) => (
-              <div key={num} className={cn(
-                "w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-500",
-                step >= num ? "bg-pink-500 text-white shadow-lg shadow-pink-200 scale-110" : "bg-white text-gray-400 border-2 border-gray-100"
-              )}>
-                {step > num ? <CheckCircle2 className="w-5 h-5" /> : num}
+              <div 
+                key={num} 
+                className={cn(
+                  "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300",
+                  step >= num 
+                    ? "bg-stone-900 text-white shadow-md" 
+                    : "bg-white text-stone-400 border border-stone-200"
+                )}
+              >
+                {step > num ? <Check className="w-4 h-4" /> : num}
               </div>
             ))}
           </div>
 
           <AnimatePresence mode="wait">
             {step === 1 && (
-              <motion.div key="step1" variants={slideVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col gap-10">
+              <motion.div key="step1" variants={slideVariants} initial="initial" animate="animate" exit="exit" className="space-y-8">
                 
+                {/* Occasion Section */}
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-800 mb-6">{t.step_1_title}</h2>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  <h3 className="text-lg font-bold text-stone-800 mb-4">{t.step_1_title}</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     {occasionsList.map((occ) => {
                       const isSelected = selectedOccasion === occ.id;
                       return (
@@ -173,27 +206,29 @@ export default function Home() {
                           key={occ.id}
                           onClick={() => setSelectedOccasion(occ.id)}
                           className={cn(
-                            "group flex flex-col items-center justify-center text-center p-4 rounded-[1.5rem] transition-all duration-300 border-2",
+                            "occasion-card p-4 rounded-2xl text-center cursor-pointer flex flex-col items-center justify-center relative",
                             isSelected 
-                              ? "bg-pink-50 border-pink-400 shadow-[0_8px_20px_rgba(255,112,141,0.15)] scale-[1.02]" 
-                              : "bg-white border-transparent shadow-sm hover:shadow-md hover:-translate-y-1"
+                              ? "bg-white shadow-[0_12px_24px_rgba(244,63,94,0.08)] border-rose-500/40" 
+                              : "bg-white/40 border-stone-200/40"
                           )}
                         >
-                          <div className="text-4xl mb-3 drop-shadow-sm transition-transform group-hover:scale-110">
-                            {occ.emoji}
-                          </div>
-                          <span className={cn("text-sm font-bold", isSelected ? "text-pink-600" : "text-gray-600")}>
+                          <span className="text-3xl mb-2">{occ.icon}</span>
+                          <span className={cn("text-xs font-bold transition-colors", isSelected ? "text-rose-600" : "text-stone-600")}>
                             {t.occasions[occ.dictKey as keyof typeof t.occasions]}
                           </span>
+                          {isSelected && (
+                            <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-rose-500"></span>
+                          )}
                         </button>
-                      )
+                      );
                     })}
                   </div>
                 </div>
 
+                {/* Categories Section */}
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-800 mb-6">{t.step_2_title}</h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                  <h3 className="text-lg font-bold text-stone-800 mb-4">{t.step_2_title}</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {categoriesList.map((cat) => {
                       const isSelected = selectedCategory === cat.id;
                       const catDict = t.categories[cat.dictKey as keyof typeof t.categories];
@@ -202,83 +237,116 @@ export default function Home() {
                           key={cat.id}
                           onClick={() => setSelectedCategory(cat.id)}
                           className={cn(
-                            "relative text-start p-5 rounded-[1.5rem] transition-all duration-300 border-2 flex flex-col h-full",
+                            "category-card p-5 rounded-2xl text-start cursor-pointer flex flex-col justify-between h-full relative",
                             isSelected 
-                              ? "bg-pink-50 border-pink-400 shadow-[0_8px_20px_rgba(255,112,141,0.15)] scale-[1.02]" 
-                              : "bg-white border-transparent shadow-sm hover:shadow-md hover:-translate-y-1"
+                              ? "bg-white shadow-[0_12px_24px_rgba(244,63,94,0.08)] border-rose-500/40" 
+                              : "bg-white/40 border-stone-200/40"
                           )}
                         >
-                          <div className="flex justify-between items-start mb-3">
-                            <span className="text-3xl drop-shadow-sm">{cat.emoji}</span>
-                            <div className={cn("w-6 h-6 rounded-full flex items-center justify-center transition-all", isSelected ? "bg-pink-500 text-white scale-110" : "bg-gray-100 text-gray-300")}>
-                              <CheckCircle2 className="w-4 h-4" />
+                          <div className="flex justify-between items-start w-full mb-3">
+                            <span className="text-3xl">{cat.icon}</span>
+                            <span className={cn("text-[10px] px-2.5 py-0.5 rounded-full font-bold", isSelected ? "bg-rose-50 text-rose-600" : "bg-stone-100 text-stone-500")}>
+                              {catDict.tag}
+                            </span>
+                          </div>
+                          
+                          <div className="mt-2">
+                            <h4 className="font-bold text-sm text-stone-800 mb-1">{catDict.title}</h4>
+                            <p className="text-xs text-stone-500 leading-relaxed line-clamp-2 mb-4 font-medium">{catDict.desc}</p>
+                          </div>
+
+                          <div className="flex justify-between items-center w-full pt-2 border-t border-stone-100/50 mt-auto">
+                            <span className="text-xs font-extrabold text-stone-750">{catDict.price}</span>
+                            <div className={cn("w-5 h-5 rounded-full flex items-center justify-center border transition-all", isSelected ? "bg-rose-500 border-transparent text-white" : "border-stone-200 text-transparent")}>
+                              <Check className="w-3 h-3" />
                             </div>
                           </div>
-                          <div className={cn("font-bold text-lg mb-1", isSelected ? "text-pink-700" : "text-gray-800")}>{catDict.title}</div>
-                          <div className="text-sm text-gray-500 mb-4 flex-grow leading-relaxed font-medium">{catDict.desc}</div>
-                          <div className={cn("font-bold text-sm px-3 py-1 rounded-full w-fit", isSelected ? "bg-pink-100 text-pink-700" : "bg-gray-100 text-gray-600")}>{catDict.price}</div>
                         </button>
-                      )
+                      );
                     })}
                   </div>
                 </div>
 
-                <div className="mt-2 flex justify-end">
-                  <button onClick={handleNext} className="bg-gray-900 text-white hover:bg-pink-500 px-8 py-3 rounded-full font-bold flex items-center gap-2 transition-all shadow-lg hover:shadow-pink-500/30 hover:-translate-y-1">
+                {/* Footer Controls */}
+                <div className="flex justify-end pt-4">
+                  <button 
+                    onClick={handleNext} 
+                    className="px-6 py-3 bg-stone-900 text-white rounded-full font-bold text-xs flex items-center gap-2 hover:bg-stone-850 active:scale-95 transition-all shadow-md"
+                  >
                     {t.next} <ArrowIcon className="w-4 h-4" />
                   </button>
                 </div>
+
               </motion.div>
             )}
 
             {step === 2 && (
-              <motion.div key="step2" variants={slideVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col gap-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-3xl">✍️</span>
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-800">{t.personalize_title}</h2>
-                    <p className="text-gray-500 text-sm font-medium">{t.personalize_desc}</p>
-                  </div>
+              <motion.div key="step2" variants={slideVariants} initial="initial" animate="animate" exit="exit" className="space-y-6">
+                <div>
+                  <h3 className="text-lg font-bold text-stone-800">{t.personalize_title}</h3>
+                  <p className="text-xs text-stone-500 font-medium">{t.personalize_desc}</p>
                 </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm font-bold text-gray-700">{t.recipient_name}</label>
+                    <label className="text-xs font-bold text-stone-600">{t.recipient_name}</label>
                     <input 
                       type="text" 
                       value={recipientName}
                       onChange={(e) => setRecipientName(e.target.value)}
                       placeholder={t.recipient_placeholder}
-                      className="joy-input p-4 w-full text-base font-semibold"
+                      className="premium-input p-3.5 text-xs font-semibold"
                     />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm font-bold text-gray-700">{t.sender_name}</label>
+                    <label className="text-xs font-bold text-stone-600">{t.sender_name}</label>
                     <input 
                       type="text" 
                       value={senderName}
                       onChange={(e) => setSenderName(e.target.value)}
                       placeholder={t.sender_placeholder}
-                      className="joy-input p-4 w-full text-base font-semibold"
+                      className="premium-input p-3.5 text-xs font-semibold"
                     />
                   </div>
-                  <div className="flex flex-col gap-2 md:col-span-2">
-                    <label className="text-sm font-bold text-gray-700">{t.message_title}</label>
+                  
+                  <div className="flex flex-col gap-2 md:col-span-2 relative">
+                    <div className="flex justify-between items-center">
+                      <label className="text-xs font-bold text-stone-600">{t.message_title}</label>
+                      
+                      {/* Smart AI Message Suggestions */}
+                      <button 
+                        type="button"
+                        onClick={handleGenerateAI}
+                        disabled={isGeneratingMessage}
+                        className="inline-flex items-center gap-1.5 text-xs font-bold text-rose-500 hover:text-rose-600 transition disabled:opacity-50 cursor-pointer"
+                      >
+                        <Sparkles className="w-3.5 h-3.5" />
+                        {isGeneratingMessage ? (lang === "ar" ? "جاري التفكير..." : "Thinking...") : (lang === "ar" ? "اقتراح ذكي بالـ AI" : "AI Message Suggestion")}
+                      </button>
+                    </div>
+                    
                     <textarea 
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       placeholder={t.message_placeholder}
-                      rows={4}
-                      className="joy-input p-4 w-full resize-none text-base font-semibold leading-relaxed"
+                      rows={5}
+                      className="premium-input p-4 w-full resize-none text-xs font-semibold leading-relaxed"
                     />
                   </div>
                 </div>
 
-                <div className="mt-8 flex justify-between items-center border-t border-gray-100 pt-6">
-                  <button onClick={() => setStep(1)} className="text-gray-400 hover:text-gray-800 font-bold flex items-center gap-2 transition-colors">
+                {/* Footer Controls */}
+                <div className="flex justify-between items-center pt-6 border-t border-stone-200/40">
+                  <button 
+                    onClick={() => setStep(1)} 
+                    className="text-stone-400 hover:text-stone-700 font-bold text-xs flex items-center gap-1 transition-all"
+                  >
                     {isRtl ? <ArrowRight className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />} {t.back}
                   </button>
-                  <button onClick={handleNext} className="bg-gray-900 text-white hover:bg-pink-500 px-8 py-3 rounded-full font-bold flex items-center gap-2 transition-all shadow-lg hover:shadow-pink-500/30 hover:-translate-y-1">
+                  <button 
+                    onClick={handleNext} 
+                    className="px-6 py-3 bg-stone-900 text-white rounded-full font-bold text-xs flex items-center gap-2 hover:bg-stone-850 active:scale-95 transition-all shadow-md"
+                  >
                     {t.continue_payment} <ArrowIcon className="w-4 h-4" />
                   </button>
                 </div>
@@ -286,60 +354,80 @@ export default function Home() {
             )}
 
             {step === 3 && (
-              <motion.div key="step3" variants={slideVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col items-center text-center py-8">
+              <motion.div key="step3" variants={slideVariants} initial="initial" animate="animate" exit="exit" className="flex flex-col items-center py-6 text-center">
                 
                 {paymentState === "idle" && (
-                  <>
-                    <div className="text-5xl mb-4">💳</div>
-                    <h2 className="text-2xl font-bold text-gray-800 mb-2">{t.secure_payment}</h2>
-                    <p className="text-gray-500 mb-8 max-w-sm font-medium leading-relaxed">{t.secure_payment_desc}</p>
+                  <div className="w-full max-w-sm flex flex-col items-center">
+                    <span className="text-5xl mb-3">💳</span>
+                    <h3 className="text-xl font-bold text-stone-800 mb-1">{t.secure_payment}</h3>
+                    <p className="text-xs text-stone-500 font-medium max-w-xs mb-8 leading-relaxed">{t.secure_payment_desc}</p>
                     
-                    <div className="flex flex-col w-full max-w-sm gap-4">
-                      <button onClick={handleCheckout} className="w-full py-4 bg-black text-white rounded-[1.5rem] font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-colors shadow-lg">
-                        <Apple className="w-5 h-5" fill="currentColor" /> {t.pay_apple}
-                      </button>
-                      <button onClick={handleCheckout} className="w-full py-4 bg-gradient-to-r from-pink-500 to-rose-400 text-white rounded-[1.5rem] font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity shadow-lg shadow-pink-200">
-                        <CreditCard className="w-5 h-5" />
-                        {t.pay_card}
-                      </button>
-                    </div>
-                    <button onClick={() => setStep(2)} className="mt-8 text-gray-400 hover:text-gray-800 transition-colors text-sm font-bold border-b border-transparent hover:border-gray-800 pb-1">{t.back_edit}</button>
-                  </>
+                    <button 
+                      onClick={handleCheckout} 
+                      className="w-full py-3.5 bg-stone-900 hover:bg-stone-800 text-white rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer mb-3"
+                    >
+                      <svg viewBox="0 0 24 24" className="w-4 h-4 fill-white"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 4.17c.66-.81 1.11-1.93.99-3.06-1 .04-2.21.67-2.93 1.49-.62.69-1.16 1.84-1.01 2.96 1.12.09 2.27-.58 2.95-1.39z"/></svg>
+                      {t.pay_apple}
+                    </button>
+                    
+                    <button 
+                      onClick={handleCheckout} 
+                      className="w-full py-3.5 bg-gradient-to-r from-rose-500 to-amber-500 text-white rounded-2xl font-bold text-xs flex items-center justify-center gap-2 hover:opacity-95 transition-all shadow-md active:scale-95 cursor-pointer"
+                    >
+                      <CreditCard className="w-4 h-4" /> {t.pay_card}
+                    </button>
+
+                    <button 
+                      onClick={() => setStep(2)} 
+                      className="mt-6 text-xs text-stone-400 hover:text-stone-700 transition font-bold"
+                    >
+                      {t.back_edit}
+                    </button>
+                  </div>
                 )}
 
                 {paymentState === "processing" && (
                   <div className="flex flex-col items-center py-12">
-                    <Loader2 className="w-12 h-12 text-pink-500 animate-spin mb-6" />
-                    <h3 className="text-xl font-bold text-gray-800 mb-2">{t.processing_payment}</h3>
-                    <p className="text-gray-500 text-sm font-medium">{t.processing_desc}</p>
+                    <Loader2 className="w-10 h-10 text-rose-500 animate-spin mb-4" />
+                    <h4 className="text-base font-bold text-stone-850 mb-1">{t.processing_payment}</h4>
+                    <p className="text-xs text-stone-500 font-medium">{t.processing_desc}</p>
                   </div>
                 )}
 
                 {paymentState === "success" && (
-                  <div className="flex flex-col items-center py-4 w-full">
-                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1, rotate: [0, -10, 10, 0] }} transition={{ type: "spring", duration: 0.8 }} className="text-7xl mb-6 drop-shadow-xl">
-                      🎉
-                    </motion.div>
-                    <h3 className="text-2xl md:text-3xl font-black text-gray-800 mb-4">{t.success_title}</h3>
-                    <p className="text-gray-500 mb-8 max-w-md font-medium leading-relaxed">{t.success_desc}</p>
+                  <div className="w-full max-w-md flex flex-col items-center">
+                    <span className="text-6xl mb-4 drop-shadow-md">🎉</span>
+                    <h3 className="text-2xl font-black text-stone-850 mb-2">{t.success_title}</h3>
+                    <p className="text-xs text-stone-500 font-medium leading-relaxed max-w-xs mb-8">{t.success_desc}</p>
                     
-                    <div className="w-full max-w-md bg-pink-50 border-2 border-pink-100 rounded-2xl p-2 pl-2 md:pl-4 flex items-center justify-between gap-4 mb-8">
-                      <input type="text" readOnly value={`https://up2ugift.vercel.app/gift/${generatedLink}`} className="bg-transparent border-none text-gray-600 w-full outline-none text-sm font-mono text-left direction-ltr px-3 font-semibold" dir="ltr" />
-                      <button onClick={() => navigator.clipboard.writeText(`https://up2ugift.vercel.app/gift/${generatedLink}`)} className="px-5 py-3 bg-pink-500 text-white rounded-xl text-sm font-bold hover:bg-pink-600 transition-all whitespace-nowrap shadow-md shadow-pink-200">
+                    <div className="w-full bg-white/60 border border-stone-200/50 rounded-2xl p-2 flex items-center justify-between gap-4 mb-8">
+                      <input 
+                        type="text" 
+                        readOnly 
+                        value={`https://16-up2ugift-v3.vercel.app/gift/${generatedLink}`} 
+                        className="bg-transparent border-none text-stone-600 w-full outline-none text-xs font-mono px-3 font-semibold text-left direction-ltr" 
+                        dir="ltr"
+                      />
+                      <button 
+                        onClick={() => navigator.clipboard.writeText(`https://16-up2ugift-v3.vercel.app/gift/${generatedLink}`)} 
+                        className="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-bold transition-all shadow-md active:scale-95"
+                      >
                         {t.copy_link}
                       </button>
                     </div>
 
                     <Link href={`/gift/${generatedLink}`}>
-                      <button className="px-8 py-3 bg-white border-2 border-gray-200 text-gray-700 rounded-full font-bold hover:bg-gray-50 transition-colors flex items-center gap-2">
-                        {t.preview_gift} <ArrowIcon className="w-4 h-4" />
+                      <button className="px-6 py-2.5 bg-white border border-stone-200 text-stone-600 rounded-full font-bold text-xs hover:bg-stone-50 transition-all flex items-center gap-1.5 shadow-sm">
+                        {t.preview_gift} <ArrowIcon className="w-3.5 h-3.5" />
                       </button>
                     </Link>
                   </div>
                 )}
+
               </motion.div>
             )}
           </AnimatePresence>
+
         </div>
       </main>
     </div>
