@@ -7,19 +7,18 @@
 
 @layer base {
   :root {
-    --background: #faf8f6;
-    --foreground: #1c1917;
+    --background: #140508; /* Deep Wine / Burgundy */
+    --foreground: #fefcfb;
     
-    --card: rgba(255, 255, 255, 0.7);
-    --card-border: rgba(255, 255, 255, 0.6);
-    --card-shadow: 0 8px 32px 0 rgba(142, 107, 85, 0.07);
+    --card: rgba(30, 8, 12, 0.65); /* Dark Glass */
+    --card-border: rgba(243, 229, 171, 0.15); /* Gold Tint border */
+    --card-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6);
     
-    --primary: #f43f5e;
-    --primary-hover: #e11d48;
+    --primary: #fbbf24; /* Champagne gold */
+    --primary-hover: #f59e0b;
   }
 }
 
-/* Beautiful Animated Gradient Mesh Background */
 body {
   background-color: var(--background);
   color: var(--foreground);
@@ -29,7 +28,7 @@ body {
   position: relative;
 }
 
-/* Luxury mesh background simulation with high performance CSS */
+/* Luxurious mesh background with deep reds, plums and golds */
 body::before {
   content: "";
   position: fixed;
@@ -39,11 +38,11 @@ body::before {
   height: 100%;
   z-index: -10;
   background: 
-    radial-gradient(at 0% 0%, rgba(244, 63, 94, 0.08) 0px, transparent 50%),
-    radial-gradient(at 50% 0%, rgba(245, 158, 11, 0.06) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.07) 0px, transparent 50%),
-    radial-gradient(at 50% 100%, rgba(244, 63, 94, 0.04) 0px, transparent 50%);
-  filter: blur(40px);
+    radial-gradient(at 0% 0%, rgba(185, 28, 28, 0.15) 0px, transparent 50%),
+    radial-gradient(at 50% 0%, rgba(245, 158, 11, 0.1) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(134, 25, 143, 0.12) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(185, 28, 28, 0.08) 0px, transparent 50%);
+  filter: blur(50px);
   animation: meshAnim 25s ease infinite alternate;
   pointer-events: none;
 }
@@ -57,39 +56,54 @@ body::before {
   }
 }
 
-/* Glassmorphism Panel */
+/* Luxury Glassmorphism Panel */
 .glass-panel {
   background: var(--card);
-  backdrop-filter: blur(24px) saturate(140%);
-  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
   border: 1px solid var(--card-border);
   box-shadow: var(--card-shadow);
   border-radius: 2.25rem;
 }
 
-/* Elegant High-End Input styling */
+/* Premium Dark Mode Input */
 .premium-input {
-  background: rgba(255, 255, 255, 0.5);
-  border: 1.5px solid rgba(28, 25, 23, 0.08);
-  color: #1c1917;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1.5px solid rgba(243, 229, 171, 0.1);
+  color: #fefcfb;
   border-radius: 1.25rem;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   font-weight: 500;
 }
 
 .premium-input:focus {
-  background: #ffffff;
-  border-color: #f43f5e;
-  box-shadow: 0 0 0 4px rgba(244, 63, 94, 0.1);
+  background: rgba(0, 0, 0, 0.5);
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15);
   outline: none;
 }
 
-/* Text Gradients */
-.gold-gradient-text {
-  background: linear-gradient(135deg, #1c1917 20%, #f43f5e 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Interactive Cards */
+.occasion-card {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1.5px solid rgba(255, 255, 255, 0.03);
+}
+.occasion-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  background: rgba(243, 229, 171, 0.08);
+  border-color: rgba(243, 229, 171, 0.25);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+}
+
+.category-card {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1.5px solid rgba(255, 255, 255, 0.03);
+}
+.category-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  background: rgba(243, 229, 171, 0.08);
+  border-color: rgba(243, 229, 171, 0.25);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
 }
 
 /* Custom Scrollbar */
@@ -100,47 +114,9 @@ body::before {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(244, 63, 94, 0.15);
+  background: rgba(243, 229, 171, 0.15);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(244, 63, 94, 0.3);
-}
-
-/* Interactive Card elements */
-.occasion-card {
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  border: 1.5px solid rgba(255, 255, 255, 0.4);
-}
-.occasion-card:hover {
-  transform: translateY(-4px) scale(1.01);
-  background: #ffffff;
-  border-color: rgba(244, 63, 94, 0.25);
-  box-shadow: 0 12px 30px rgba(244, 63, 94, 0.06);
-}
-
-.category-card {
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  border: 1.5px solid rgba(255, 255, 255, 0.4);
-}
-.category-card:hover {
-  transform: translateY(-4px) scale(1.01);
-  background: #ffffff;
-  border-color: rgba(244, 63, 94, 0.25);
-  box-shadow: 0 12px 30px rgba(244, 63, 94, 0.06);
-}
-
-/* Loading animations */
-@keyframes pulseGlow {
-  0%, 100% {
-    opacity: 0.6;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.9;
-    transform: scale(1.05);
-  }
-}
-.pulse-glow {
-  animation: pulseGlow 2s infinite ease-in-out;
+  background: rgba(243, 229, 171, 0.35);
 }

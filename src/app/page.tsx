@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check, CreditCard, Loader2, Sparkles, Globe } from "lucide-react";
 import Link from "next/link";
@@ -49,6 +49,15 @@ export default function Home() {
   const [paymentState, setPaymentState] = useState<"idle" | "processing" | "success">("idle");
   const [generatedLink, setGeneratedLink] = useState("");
 
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Auto-fill message when occasion or language changes
+  useEffect(() => {
+    const templates = isRtl ? arAI : enAI;
+    const occasionTemplates = templates[selectedOccasion as keyof typeof templates] || templates.friend;
+    setMessage(occasionTemplates[0]);
+  }, [selectedOccasion, lang]);
+
   const handleNext = () => {
     if (step === 2 && (!senderName || !recipientName)) {
       alert(lang === "ar" ? "الرجاء كتابة الأسماء أولاً" : "Please fill in the names first");
@@ -58,30 +67,42 @@ export default function Home() {
   };
 
   const handleGenerateAI = () => {
+    // Clear any active typing intervals
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+
     setIsGeneratingMessage(true);
-    setMessage(""); // clear first
+    setMessage("");
     
-    // Simulate typing speed and AI logic
     const templates = isRtl ? arAI : enAI;
     const occasionTemplates = templates[selectedOccasion as keyof typeof templates] || templates.friend;
-    const randomMessage = occasionTemplates[Math.floor(Math.random() * occasionTemplates.length)];
-
+    // Get a random template that is not the current one if possible
+    let randomMessage = occasionTemplates[Math.floor(Math.random() * occasionTemplates.length)];
+    
     let currentText = "";
     let index = 0;
     
     setTimeout(() => {
       setIsGeneratingMessage(false);
-      const interval = setInterval(() => {
+      intervalRef.current = setInterval(() => {
         if (index < randomMessage.length) {
           currentText += randomMessage[index];
           setMessage(currentText);
           index++;
         } else {
-          clearInterval(interval);
+          if (intervalRef.current) clearInterval(intervalRef.current);
         }
-      }, 35);
-    }, 1200); // simulation time
+      }, 25); // Faster typing speed
+    }, 800);
   };
+
+  // Cleanup interval on unmount
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
 
   const handleCheckout = async () => {
     setPaymentState("processing");
@@ -104,7 +125,6 @@ export default function Home() {
     }, 1800);
   };
 
-  // Ultra smooth page transition variants
   const slideVariants = {
     initial: { opacity: 0, y: 15 },
     animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
@@ -118,20 +138,20 @@ export default function Home() {
       {/* Header bar */}
       <header className="w-full py-6 px-6 md:px-12 flex justify-between items-center max-w-7xl mx-auto relative z-20">
         <div className="flex items-center gap-2 select-none">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-500 to-amber-400 flex items-center justify-center text-white shadow-md font-bold text-xl">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-300 via-yellow-400 to-amber-500 flex items-center justify-center text-stone-950 shadow-md font-black text-xl">
             U
           </div>
-          <span className="font-extrabold text-xl tracking-tight text-stone-800">Up2UGift</span>
+          <span className="font-extrabold text-xl tracking-tight text-amber-100">Up2UGift</span>
         </div>
         <div className="flex items-center gap-4">
           <button 
             onClick={toggleLanguage} 
-            className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/70 backdrop-blur-md border border-stone-200/50 shadow-sm hover:bg-white transition-all text-xs font-bold text-stone-700 cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 backdrop-blur-md border border-amber-500/20 shadow-sm hover:bg-white/10 transition-all text-xs font-bold text-amber-200 cursor-pointer"
           >
-            <Globe className="w-3.5 h-3.5 text-rose-500" />
+            <Globe className="w-3.5 h-3.5 text-amber-400" />
             {lang === "ar" ? "English" : "العربية"}
           </button>
-          <Link href="/admin/login" className="text-xs font-bold text-stone-500 hover:text-stone-800 transition">
+          <Link href="/admin/login" className="text-xs font-bold text-amber-400/70 hover:text-amber-300 transition">
             {t.login}
           </Link>
         </div>
@@ -146,15 +166,15 @@ export default function Home() {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mb-10"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/5 border border-rose-500/10 mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
-            <span className="text-[11px] font-bold text-rose-600 tracking-wider uppercase">{t.hero_badge}</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/5 border border-amber-500/20 mb-4">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+            <span className="text-[11px] font-bold text-amber-300 tracking-wider uppercase">{t.hero_badge}</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-black text-stone-850 leading-tight tracking-tight">
+          <h1 className="text-4xl md:text-5xl font-black text-white leading-tight tracking-tight">
             {t.hero_title_1} <br/>
-            <span className="bg-gradient-to-r from-rose-500 to-amber-500 bg-clip-text text-transparent">{t.hero_title_2}</span>
+            <span className="bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-300 bg-clip-text text-transparent">{t.hero_title_2}</span>
           </h1>
-          <p className="text-sm text-stone-500 max-w-lg mx-auto mt-4 font-medium leading-relaxed">
+          <p className="text-sm text-amber-200/60 max-w-lg mx-auto mt-4 font-medium leading-relaxed">
             {t.hero_desc}
           </p>
         </motion.div>
@@ -163,14 +183,14 @@ export default function Home() {
         <div className="w-full glass-panel p-6 md:p-10 relative overflow-hidden">
           
           {/* Subtle horizontal light ray */}
-          <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-rose-500/20 to-transparent"></div>
+          <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-amber-500/30 to-transparent"></div>
 
           {/* Stepper Indicator */}
-          <div className="w-full flex justify-between items-center mb-8 relative max-w-md mx-auto">
-            <div className="absolute left-0 right-0 h-[2px] bg-stone-200/50 top-1/2 -translate-y-1/2 -z-10 rounded-full"></div>
+          <div className="w-full flex justify-between items-center mb-10 relative max-w-md mx-auto">
+            <div className="absolute left-0 right-0 h-[2px] bg-white/5 top-1/2 -translate-y-1/2 -z-10 rounded-full"></div>
             <div 
               className={cn(
-                "absolute h-[2.5px] bg-rose-500 top-1/2 -translate-y-1/2 -z-10 rounded-full transition-all duration-500 ease-out",
+                "absolute h-[2.5px] bg-gradient-to-r from-amber-300 to-yellow-400 top-1/2 -translate-y-1/2 -z-10 rounded-full transition-all duration-500 ease-out",
                 isRtl ? "right-0" : "left-0"
               )}
               style={{ width: `${((step - 1) / 2) * 100}%` }}
@@ -180,10 +200,10 @@ export default function Home() {
               <div 
                 key={num} 
                 className={cn(
-                  "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300",
+                  "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 border",
                   step >= num 
-                    ? "bg-stone-900 text-white shadow-md" 
-                    : "bg-white text-stone-400 border border-stone-200"
+                    ? "bg-gradient-to-r from-amber-300 to-yellow-400 text-stone-950 border-transparent shadow-md font-black" 
+                    : "bg-stone-900/40 text-stone-400 border-white/5"
                 )}
               >
                 {step > num ? <Check className="w-4 h-4" /> : num}
@@ -197,7 +217,7 @@ export default function Home() {
                 
                 {/* Occasion Section */}
                 <div>
-                  <h3 className="text-lg font-bold text-stone-800 mb-4">{t.step_1_title}</h3>
+                  <h3 className="text-lg font-bold text-amber-100 mb-4">{t.step_1_title}</h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     {occasionsList.map((occ) => {
                       const isSelected = selectedOccasion === occ.id;
@@ -208,16 +228,16 @@ export default function Home() {
                           className={cn(
                             "occasion-card p-4 rounded-2xl text-center cursor-pointer flex flex-col items-center justify-center relative",
                             isSelected 
-                              ? "bg-white shadow-[0_12px_24px_rgba(244,63,94,0.08)] border-rose-500/40" 
-                              : "bg-white/40 border-stone-200/40"
+                              ? "bg-white/10 shadow-[0_12px_24px_rgba(243,229,171,0.08)] border-amber-400/50" 
+                              : "bg-white/5 border-white/5"
                           )}
                         >
                           <span className="text-3xl mb-2">{occ.icon}</span>
-                          <span className={cn("text-xs font-bold transition-colors", isSelected ? "text-rose-600" : "text-stone-600")}>
+                          <span className={cn("text-xs font-bold transition-colors", isSelected ? "text-amber-300" : "text-stone-300")}>
                             {t.occasions[occ.dictKey as keyof typeof t.occasions]}
                           </span>
                           {isSelected && (
-                            <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-rose-500"></span>
+                            <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-amber-400"></span>
                           )}
                         </button>
                       );
@@ -227,7 +247,7 @@ export default function Home() {
 
                 {/* Categories Section */}
                 <div>
-                  <h3 className="text-lg font-bold text-stone-800 mb-4">{t.step_2_title}</h3>
+                  <h3 className="text-lg font-bold text-amber-100 mb-4">{t.step_2_title}</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {categoriesList.map((cat) => {
                       const isSelected = selectedCategory === cat.id;
@@ -239,25 +259,25 @@ export default function Home() {
                           className={cn(
                             "category-card p-5 rounded-2xl text-start cursor-pointer flex flex-col justify-between h-full relative",
                             isSelected 
-                              ? "bg-white shadow-[0_12px_24px_rgba(244,63,94,0.08)] border-rose-500/40" 
-                              : "bg-white/40 border-stone-200/40"
+                              ? "bg-white/10 shadow-[0_12px_24px_rgba(243,229,171,0.08)] border-amber-400/50" 
+                              : "bg-white/5 border-white/5"
                           )}
                         >
                           <div className="flex justify-between items-start w-full mb-3">
                             <span className="text-3xl">{cat.icon}</span>
-                            <span className={cn("text-[10px] px-2.5 py-0.5 rounded-full font-bold", isSelected ? "bg-rose-50 text-rose-600" : "bg-stone-100 text-stone-500")}>
+                            <span className={cn("text-[10px] px-2.5 py-0.5 rounded-full font-bold", isSelected ? "bg-amber-400/10 text-amber-300" : "bg-white/5 text-stone-400")}>
                               {catDict.tag}
                             </span>
                           </div>
                           
                           <div className="mt-2">
-                            <h4 className="font-bold text-sm text-stone-800 mb-1">{catDict.title}</h4>
-                            <p className="text-xs text-stone-500 leading-relaxed line-clamp-2 mb-4 font-medium">{catDict.desc}</p>
+                            <h4 className="font-bold text-sm text-stone-100 mb-1">{catDict.title}</h4>
+                            <p className="text-xs text-stone-400 leading-relaxed line-clamp-2 mb-4 font-medium">{catDict.desc}</p>
                           </div>
 
-                          <div className="flex justify-between items-center w-full pt-2 border-t border-stone-100/50 mt-auto">
-                            <span className="text-xs font-extrabold text-stone-750">{catDict.price}</span>
-                            <div className={cn("w-5 h-5 rounded-full flex items-center justify-center border transition-all", isSelected ? "bg-rose-500 border-transparent text-white" : "border-stone-200 text-transparent")}>
+                          <div className="flex justify-between items-center w-full pt-2 border-t border-white/5 mt-auto">
+                            <span className="text-xs font-extrabold text-amber-200">{catDict.price}</span>
+                            <div className={cn("w-5 h-5 rounded-full flex items-center justify-center border transition-all", isSelected ? "bg-amber-400 border-transparent text-stone-950" : "border-stone-600 text-transparent")}>
                               <Check className="w-3 h-3" />
                             </div>
                           </div>
@@ -271,7 +291,7 @@ export default function Home() {
                 <div className="flex justify-end pt-4">
                   <button 
                     onClick={handleNext} 
-                    className="px-6 py-3 bg-stone-900 text-white rounded-full font-bold text-xs flex items-center gap-2 hover:bg-stone-850 active:scale-95 transition-all shadow-md"
+                    className="px-6 py-3 bg-gradient-to-r from-amber-300 to-yellow-400 text-stone-950 rounded-full font-black text-xs flex items-center gap-2 hover:brightness-110 active:scale-95 transition-all shadow-md cursor-pointer"
                   >
                     {t.next} <ArrowIcon className="w-4 h-4" />
                   </button>
@@ -283,13 +303,13 @@ export default function Home() {
             {step === 2 && (
               <motion.div key="step2" variants={slideVariants} initial="initial" animate="animate" exit="exit" className="space-y-6">
                 <div>
-                  <h3 className="text-lg font-bold text-stone-800">{t.personalize_title}</h3>
-                  <p className="text-xs text-stone-500 font-medium">{t.personalize_desc}</p>
+                  <h3 className="text-lg font-bold text-amber-100">{t.personalize_title}</h3>
+                  <p className="text-xs text-amber-200/50 font-medium">{t.personalize_desc}</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-2">
-                    <label className="text-xs font-bold text-stone-600">{t.recipient_name}</label>
+                    <label className="text-xs font-bold text-stone-300">{t.recipient_name}</label>
                     <input 
                       type="text" 
                       value={recipientName}
@@ -299,7 +319,7 @@ export default function Home() {
                     />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <label className="text-xs font-bold text-stone-600">{t.sender_name}</label>
+                    <label className="text-xs font-bold text-stone-300">{t.sender_name}</label>
                     <input 
                       type="text" 
                       value={senderName}
@@ -311,14 +331,14 @@ export default function Home() {
                   
                   <div className="flex flex-col gap-2 md:col-span-2 relative">
                     <div className="flex justify-between items-center">
-                      <label className="text-xs font-bold text-stone-600">{t.message_title}</label>
+                      <label className="text-xs font-bold text-stone-300">{t.message_title}</label>
                       
                       {/* Smart AI Message Suggestions */}
                       <button 
                         type="button"
                         onClick={handleGenerateAI}
                         disabled={isGeneratingMessage}
-                        className="inline-flex items-center gap-1.5 text-xs font-bold text-rose-500 hover:text-rose-600 transition disabled:opacity-50 cursor-pointer"
+                        className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-300 hover:text-amber-250 transition disabled:opacity-50 cursor-pointer"
                       >
                         <Sparkles className="w-3.5 h-3.5" />
                         {isGeneratingMessage ? (lang === "ar" ? "جاري التفكير..." : "Thinking...") : (lang === "ar" ? "اقتراح ذكي بالـ AI" : "AI Message Suggestion")}
@@ -336,16 +356,16 @@ export default function Home() {
                 </div>
 
                 {/* Footer Controls */}
-                <div className="flex justify-between items-center pt-6 border-t border-stone-200/40">
+                <div className="flex justify-between items-center pt-6 border-t border-white/5">
                   <button 
                     onClick={() => setStep(1)} 
-                    className="text-stone-400 hover:text-stone-700 font-bold text-xs flex items-center gap-1 transition-all"
+                    className="text-stone-400 hover:text-stone-200 font-bold text-xs flex items-center gap-1 transition-all"
                   >
                     {isRtl ? <ArrowRight className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />} {t.back}
                   </button>
                   <button 
                     onClick={handleNext} 
-                    className="px-6 py-3 bg-stone-900 text-white rounded-full font-bold text-xs flex items-center gap-2 hover:bg-stone-850 active:scale-95 transition-all shadow-md"
+                    className="px-6 py-3 bg-gradient-to-r from-amber-300 to-yellow-400 text-stone-950 rounded-full font-black text-xs flex items-center gap-2 hover:brightness-110 active:scale-95 transition-all shadow-md cursor-pointer"
                   >
                     {t.continue_payment} <ArrowIcon className="w-4 h-4" />
                   </button>
@@ -359,27 +379,27 @@ export default function Home() {
                 {paymentState === "idle" && (
                   <div className="w-full max-w-sm flex flex-col items-center">
                     <span className="text-5xl mb-3">💳</span>
-                    <h3 className="text-xl font-bold text-stone-800 mb-1">{t.secure_payment}</h3>
-                    <p className="text-xs text-stone-500 font-medium max-w-xs mb-8 leading-relaxed">{t.secure_payment_desc}</p>
+                    <h3 className="text-xl font-bold text-amber-100 mb-1">{t.secure_payment}</h3>
+                    <p className="text-xs text-amber-205/50 font-medium max-w-xs mb-8 leading-relaxed">{t.secure_payment_desc}</p>
                     
                     <button 
                       onClick={handleCheckout} 
-                      className="w-full py-3.5 bg-stone-900 hover:bg-stone-800 text-white rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer mb-3"
+                      className="w-full py-3.5 bg-white text-stone-950 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer mb-3 hover:bg-stone-50"
                     >
-                      <svg viewBox="0 0 24 24" className="w-4 h-4 fill-white"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 4.17c.66-.81 1.11-1.93.99-3.06-1 .04-2.21.67-2.93 1.49-.62.69-1.16 1.84-1.01 2.96 1.12.09 2.27-.58 2.95-1.39z"/></svg>
+                      <svg viewBox="0 0 24 24" className="w-4 h-4 fill-stone-950"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 4.17c.66-.81 1.11-1.93.99-3.06-1 .04-2.21.67-2.93 1.49-.62.69-1.16 1.84-1.01 2.96 1.12.09 2.27-.58 2.95-1.39z"/></svg>
                       {t.pay_apple}
                     </button>
                     
                     <button 
                       onClick={handleCheckout} 
-                      className="w-full py-3.5 bg-gradient-to-r from-rose-500 to-amber-500 text-white rounded-2xl font-bold text-xs flex items-center justify-center gap-2 hover:opacity-95 transition-all shadow-md active:scale-95 cursor-pointer"
+                      className="w-full py-3.5 bg-gradient-to-r from-amber-300 to-yellow-400 text-stone-950 rounded-2xl font-black text-xs flex items-center justify-center gap-2 hover:brightness-110 transition-all shadow-md active:scale-95 cursor-pointer"
                     >
                       <CreditCard className="w-4 h-4" /> {t.pay_card}
                     </button>
 
                     <button 
                       onClick={() => setStep(2)} 
-                      className="mt-6 text-xs text-stone-400 hover:text-stone-700 transition font-bold"
+                      className="mt-6 text-xs text-stone-400 hover:text-stone-200 transition font-bold"
                     >
                       {t.back_edit}
                     </button>
@@ -388,36 +408,36 @@ export default function Home() {
 
                 {paymentState === "processing" && (
                   <div className="flex flex-col items-center py-12">
-                    <Loader2 className="w-10 h-10 text-rose-500 animate-spin mb-4" />
-                    <h4 className="text-base font-bold text-stone-850 mb-1">{t.processing_payment}</h4>
-                    <p className="text-xs text-stone-500 font-medium">{t.processing_desc}</p>
+                    <Loader2 className="w-10 h-10 text-amber-400 animate-spin mb-4" />
+                    <h4 className="text-base font-bold text-amber-100 mb-1">{t.processing_payment}</h4>
+                    <p className="text-xs text-amber-205/50 font-medium">{t.processing_desc}</p>
                   </div>
                 )}
 
                 {paymentState === "success" && (
                   <div className="w-full max-w-md flex flex-col items-center">
                     <span className="text-6xl mb-4 drop-shadow-md">🎉</span>
-                    <h3 className="text-2xl font-black text-stone-850 mb-2">{t.success_title}</h3>
-                    <p className="text-xs text-stone-500 font-medium leading-relaxed max-w-xs mb-8">{t.success_desc}</p>
+                    <h3 className="text-2xl font-black text-amber-150 mb-2">{t.success_title}</h3>
+                    <p className="text-xs text-amber-205/55 font-medium leading-relaxed max-w-xs mb-8">{t.success_desc}</p>
                     
-                    <div className="w-full bg-white/60 border border-stone-200/50 rounded-2xl p-2 flex items-center justify-between gap-4 mb-8">
+                    <div className="w-full bg-stone-900/60 border border-white/5 rounded-2xl p-2 flex items-center justify-between gap-4 mb-8">
                       <input 
                         type="text" 
                         readOnly 
                         value={`https://16-up2ugift-v3.vercel.app/gift/${generatedLink}`} 
-                        className="bg-transparent border-none text-stone-600 w-full outline-none text-xs font-mono px-3 font-semibold text-left direction-ltr" 
+                        className="bg-transparent border-none text-stone-300 w-full outline-none text-xs font-mono px-3 font-semibold text-left direction-ltr" 
                         dir="ltr"
                       />
                       <button 
                         onClick={() => navigator.clipboard.writeText(`https://16-up2ugift-v3.vercel.app/gift/${generatedLink}`)} 
-                        className="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-bold transition-all shadow-md active:scale-95"
+                        className="px-4 py-2 bg-gradient-to-r from-amber-300 to-yellow-400 text-stone-950 font-black rounded-xl text-xs transition-all shadow-md active:scale-95"
                       >
                         {t.copy_link}
                       </button>
                     </div>
 
                     <Link href={`/gift/${generatedLink}`}>
-                      <button className="px-6 py-2.5 bg-white border border-stone-200 text-stone-600 rounded-full font-bold text-xs hover:bg-stone-50 transition-all flex items-center gap-1.5 shadow-sm">
+                      <button className="px-6 py-2.5 bg-white/5 border border-white/5 text-amber-250 rounded-full font-bold text-xs hover:bg-white/10 transition-all flex items-center gap-1.5 shadow-sm">
                         {t.preview_gift} <ArrowIcon className="w-3.5 h-3.5" />
                       </button>
                     </Link>
