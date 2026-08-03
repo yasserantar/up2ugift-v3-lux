@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
@@ -56,7 +57,7 @@ export default function Home() {
     const templates = isRtl ? arAI : enAI;
     const occasionTemplates = templates[selectedOccasion as keyof typeof templates] || templates.friend;
     setMessage(occasionTemplates[0]);
-  }, [selectedOccasion, lang]);
+  }, [selectedOccasion, lang, isRtl]);
 
   const handleNext = () => {
     if (step === 2 && (!senderName || !recipientName)) {
@@ -78,7 +79,7 @@ export default function Home() {
     const templates = isRtl ? arAI : enAI;
     const occasionTemplates = templates[selectedOccasion as keyof typeof templates] || templates.friend;
     // Get a random template that is not the current one if possible
-    let randomMessage = occasionTemplates[Math.floor(Math.random() * occasionTemplates.length)];
+    const randomMessage = occasionTemplates[Math.floor(Math.random() * occasionTemplates.length)];
     
     let currentText = "";
     let index = 0;

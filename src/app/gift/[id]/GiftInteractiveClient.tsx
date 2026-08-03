@@ -13,7 +13,18 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export default function GiftInteractiveClient({ giftData }: { giftData: any }) {
+interface GiftData {
+  id: string;
+  giftId: string;
+  senderName: string;
+  recipientName: string;
+  message: string;
+  amount: number;
+  template?: string;
+  category?: string;
+}
+
+export default function GiftInteractiveClient({ giftData }: { giftData: GiftData }) {
   const { lang, t } = useLanguage();
   const isRtl = lang === "ar";
   const [step, setStep] = useState(0);
@@ -133,7 +144,7 @@ export default function GiftInteractiveClient({ giftData }: { giftData: any }) {
               <div className="absolute top-0 left-0 w-full h-[4px] bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-300"></div>
               
               <p className="text-stone-100 text-lg md:text-xl leading-relaxed font-bold italic pt-2">
-                "{giftData.message}"
+                &ldquo;{giftData.message}&rdquo;
               </p>
               
               <div className="mt-6 flex justify-end w-full">
