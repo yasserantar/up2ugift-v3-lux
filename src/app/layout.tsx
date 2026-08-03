@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar">
-      <body className={`${cairo.variable} ${inter.variable} antialiased text-gray-800 selection:bg-pink-500/30 bg-[#FFFBF7]`}>
+      <body className={`${cairo.variable} ${inter.variable} antialiased selection:bg-amber-500/30`}>
         <LanguageProvider>
           {children}
         </LanguageProvider>
