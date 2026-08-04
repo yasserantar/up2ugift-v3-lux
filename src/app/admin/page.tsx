@@ -5,6 +5,8 @@ import { prisma } from "@/lib/prisma";
 import { LogOut, Gift, CreditCard, LayoutDashboard, Users } from "lucide-react";
 import LogoutButton from "./LogoutButton";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminDashboard() {
   const session = await getServerSession(authOptions);
 

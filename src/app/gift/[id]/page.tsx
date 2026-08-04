@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import GiftInteractiveClient from "./GiftInteractiveClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function GiftPage({ params }: { params: { id: string } }) {
   // Fetch from database
   const gift = await prisma.gift.findUnique({
