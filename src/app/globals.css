@@ -7,15 +7,15 @@
 
 @layer base {
   :root {
-    --background: #140508; /* Deep Wine / Burgundy */
+    --background: #06020a; /* Luxurious Deep Black-Purple */
     --foreground: #fefcfb;
     
-    --card: rgba(30, 8, 12, 0.65); /* Dark Glass */
-    --card-border: rgba(243, 229, 171, 0.15); /* Gold Tint border */
-    --card-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6);
+    --card: rgba(12, 6, 22, 0.75); /* Deep Dark Translucent Glass */
+    --card-border: rgba(236, 197, 115, 0.18); /* Luxury Gold Tint border */
+    --card-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.8);
     
-    --primary: #fbbf24; /* Champagne gold */
-    --primary-hover: #f59e0b;
+    --primary: #ecc573; /* Luxurious Gold */
+    --primary-hover: #dfb256;
   }
 }
 
@@ -28,7 +28,7 @@ body {
   position: relative;
 }
 
-/* Luxurious mesh background with deep reds, plums and golds */
+/* Luxurious mesh background with deep violet, gold and pink glows */
 body::before {
   content: "";
   position: fixed;
@@ -38,22 +38,13 @@ body::before {
   height: 100%;
   z-index: -10;
   background: 
-    radial-gradient(at 0% 0%, rgba(185, 28, 28, 0.15) 0px, transparent 50%),
-    radial-gradient(at 50% 0%, rgba(245, 158, 11, 0.1) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(134, 25, 143, 0.12) 0px, transparent 50%),
-    radial-gradient(at 50% 100%, rgba(185, 28, 28, 0.08) 0px, transparent 50%);
-  filter: blur(50px);
-  animation: meshAnim 25s ease infinite alternate;
+    radial-gradient(at 10% 20%, rgba(139, 92, 246, 0.18) 0px, transparent 45%), /* Violet glow */
+    radial-gradient(at 90% 10%, rgba(219, 39, 119, 0.12) 0px, transparent 40%), /* Pink accent */
+    radial-gradient(at 50% 50%, rgba(236, 197, 115, 0.06) 0px, transparent 50%), /* Gold glow */
+    radial-gradient(at 80% 90%, rgba(139, 92, 246, 0.1) 0px, transparent 40%),  /* Violet bottom */
+    radial-gradient(at 20% 80%, rgba(219, 39, 119, 0.08) 0px, transparent 40%); /* Pink bottom */
+  filter: blur(40px);
   pointer-events: none;
-}
-
-@keyframes meshAnim {
-  0% {
-    background-position: 0% 0%;
-  }
-  100% {
-    background-position: 100% 100%;
-  }
 }
 
 /* Luxury Glassmorphism Panel */
@@ -69,7 +60,7 @@ body::before {
 /* Premium Dark Mode Input */
 .premium-input {
   background: rgba(0, 0, 0, 0.3);
-  border: 1.5px solid rgba(243, 229, 171, 0.1);
+  border: 1.5px solid rgba(236, 197, 115, 0.1);
   color: #fefcfb;
   border-radius: 1.25rem;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -78,8 +69,8 @@ body::before {
 
 .premium-input:focus {
   background: rgba(0, 0, 0, 0.5);
-  border-color: #f59e0b;
-  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15);
+  border-color: #ecc573;
+  box-shadow: 0 0 0 4px rgba(236, 197, 115, 0.15);
   outline: none;
 }
 
@@ -90,8 +81,8 @@ body::before {
 }
 .occasion-card:hover {
   transform: translateY(-4px) scale(1.02);
-  background: rgba(243, 229, 171, 0.08);
-  border-color: rgba(243, 229, 171, 0.25);
+  background: rgba(236, 197, 115, 0.08);
+  border-color: rgba(236, 197, 115, 0.25);
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
 }
 
@@ -101,8 +92,8 @@ body::before {
 }
 .category-card:hover {
   transform: translateY(-4px) scale(1.02);
-  background: rgba(243, 229, 171, 0.08);
-  border-color: rgba(243, 229, 171, 0.25);
+  background: rgba(236, 197, 115, 0.08);
+  border-color: rgba(236, 197, 115, 0.25);
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
 }
 
@@ -114,9 +105,9 @@ body::before {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(243, 229, 171, 0.15);
+  background: rgba(236, 197, 115, 0.15);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(243, 229, 171, 0.35);
+  background: rgba(236, 197, 115, 0.35);
 }

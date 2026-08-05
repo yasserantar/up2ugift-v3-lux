@@ -49,6 +49,7 @@ export default function Home() {
   const [isGeneratingMessage, setIsGeneratingMessage] = useState(false);
   const [paymentState, setPaymentState] = useState<"idle" | "processing" | "success">("idle");
   const [generatedLink, setGeneratedLink] = useState("");
+  const [shareUrl, setShareUrl] = useState("");
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -118,6 +119,7 @@ export default function Home() {
 
       if (res.success && res.giftId) {
         setGeneratedLink(res.giftId);
+        setShareUrl(`${window.location.origin}/gift/${res.giftId}`);
         setPaymentState("success");
       } else {
         alert(lang === "ar" ? "حدث خطأ أثناء حفظ الهدية" : "An error occurred while saving the gift");
@@ -135,24 +137,113 @@ export default function Home() {
   const ArrowIcon = isRtl ? ArrowLeft : ArrowRight;
 
   return (
-    <div className="relative min-h-screen pb-24">
+    <div className="relative min-h-screen pb-24 overflow-hidden">
+      {/* Premium Floating Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        {/* Floating 3D-like Gift Box 1 */}
+        <motion.div 
+          animate={{ 
+            y: [0, -25, 0],
+            x: [0, 10, 0],
+            rotate: [0, 15, -15, 0]
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="absolute top-[20%] left-[5%] md:left-[8%] text-6xl md:text-7xl drop-shadow-[0_15px_20px_rgba(139,92,246,0.35)] filter opacity-80 select-none"
+        >
+          🎁
+        </motion.div>
+
+        {/* Floating 3D-like Gift Box 2 */}
+        <motion.div 
+          animate={{ 
+            y: [0, -30, 0],
+            x: [0, -15, 0],
+            rotate: [0, -10, 10, 0]
+          }}
+          transition={{
+            duration: 12,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1.5
+          }}
+          className="absolute top-[45%] right-[4%] md:right-[6%] text-5xl md:text-6xl drop-shadow-[0_15px_20px_rgba(219,39,119,0.35)] filter opacity-75 select-none"
+        >
+          💝
+        </motion.div>
+
+        {/* Floating Sparkle / Star 1 */}
+        <motion.div 
+          animate={{ 
+            scale: [0.8, 1.2, 0.8],
+            opacity: [0.4, 0.9, 0.4]
+          }}
+          transition={{
+            duration: 5,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="absolute top-[12%] right-[20%] text-amber-200 text-3xl drop-shadow-[0_0_8px_rgba(236,197,115,0.6)] select-none"
+        >
+          ✨
+        </motion.div>
+
+        {/* Floating Sparkle / Star 2 */}
+        <motion.div 
+          animate={{ 
+            scale: [1, 1.3, 1],
+            opacity: [0.3, 0.8, 0.3]
+          }}
+          transition={{
+            duration: 7,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2
+          }}
+          className="absolute bottom-[35%] left-[6%] text-purple-400 text-2xl drop-shadow-[0_0_8px_rgba(139,92,246,0.5)] select-none"
+        >
+          ✨
+        </motion.div>
+
+        {/* Floating Hearts / Love 1 */}
+        <motion.div 
+          animate={{ 
+            y: [0, -20, 0],
+            x: [0, 5, 0],
+            scale: [0.9, 1.1, 0.9]
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 3
+          }}
+          className="absolute bottom-[20%] right-[12%] text-pink-400 text-4xl drop-shadow-[0_0_12px_rgba(219,39,119,0.5)] select-none"
+        >
+          💖
+        </motion.div>
+      </div>
+
       {/* Header bar */}
       <header className="w-full py-6 px-6 md:px-12 flex justify-between items-center max-w-7xl mx-auto relative z-20">
         <div className="flex items-center gap-2 select-none">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-300 via-yellow-400 to-amber-500 flex items-center justify-center text-stone-950 shadow-md font-black text-xl">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#ecc573] via-[#dfb256] to-[#ecc573] flex items-center justify-center text-stone-950 shadow-[0_0_15px_rgba(236,197,115,0.3)] font-black text-xl">
             U
           </div>
-          <span className="font-extrabold text-xl tracking-tight text-amber-100">Up2UGift</span>
+          <span className="font-extrabold text-xl tracking-tight text-white">Up2U<span className="text-[#ecc573]">Gift</span></span>
         </div>
         <div className="flex items-center gap-4">
           <button 
             onClick={toggleLanguage} 
-            className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 backdrop-blur-md border border-amber-500/20 shadow-sm hover:bg-white/10 transition-all text-xs font-bold text-amber-200 cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 backdrop-blur-md border border-[#ecc573]/20 shadow-sm hover:bg-white/10 transition-all text-xs font-bold text-amber-200 cursor-pointer"
           >
-            <Globe className="w-3.5 h-3.5 text-amber-400" />
+            <Globe className="w-3.5 h-3.5 text-[#ecc573]" />
             {lang === "ar" ? "English" : "العربية"}
           </button>
-          <Link href="/admin/login" className="text-xs font-bold text-amber-400/70 hover:text-amber-300 transition">
+          <Link href="/admin/login" className="text-xs font-bold text-[#ecc573]/70 hover:text-[#ecc573] transition">
             {t.login}
           </Link>
         </div>
@@ -167,13 +258,13 @@ export default function Home() {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mb-10"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/5 border border-amber-500/20 mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
-            <span className="text-[11px] font-bold text-amber-300 tracking-wider uppercase">{t.hero_badge}</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#ecc573]/5 border border-[#ecc573]/20 mb-4 shadow-[0_0_15px_rgba(236,197,115,0.05)]">
+            <span className="w-1.5 h-1.5 rounded-full bg-pink-500 animate-pulse"></span>
+            <span className="text-[11px] font-bold text-[#ecc573] tracking-wider uppercase">{t.hero_badge}</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-black text-white leading-tight tracking-tight">
             {t.hero_title_1} <br/>
-            <span className="bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-300 bg-clip-text text-transparent">{t.hero_title_2}</span>
+            <span className="bg-gradient-to-r from-[#ecc573] via-pink-500 to-[#ecc573] bg-clip-text text-transparent">{t.hero_title_2}</span>
           </h1>
           <p className="text-sm text-amber-200/60 max-w-lg mx-auto mt-4 font-medium leading-relaxed">
             {t.hero_desc}
@@ -181,17 +272,17 @@ export default function Home() {
         </motion.div>
 
         {/* Stepper Card */}
-        <div className="w-full glass-panel p-6 md:p-10 relative overflow-hidden">
+        <div className="w-full glass-panel p-6 md:p-10 relative overflow-hidden shadow-[0_0_50px_rgba(139,92,246,0.12)] border-[#ecc573]/10">
           
           {/* Subtle horizontal light ray */}
-          <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-amber-500/30 to-transparent"></div>
+          <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-pink-500/20 to-transparent"></div>
 
           {/* Stepper Indicator */}
           <div className="w-full flex justify-between items-center mb-10 relative max-w-md mx-auto">
             <div className="absolute left-0 right-0 h-[2px] bg-white/5 top-1/2 -translate-y-1/2 -z-10 rounded-full"></div>
             <div 
               className={cn(
-                "absolute h-[2.5px] bg-gradient-to-r from-amber-300 to-yellow-400 top-1/2 -translate-y-1/2 -z-10 rounded-full transition-all duration-500 ease-out",
+                "absolute h-[2.5px] bg-gradient-to-r from-[#ecc573] via-pink-500 to-[#ecc573] top-1/2 -translate-y-1/2 -z-10 rounded-full transition-all duration-500 ease-out",
                 isRtl ? "right-0" : "left-0"
               )}
               style={{ width: `${((step - 1) / 2) * 100}%` }}
@@ -203,7 +294,7 @@ export default function Home() {
                 className={cn(
                   "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 border",
                   step >= num 
-                    ? "bg-gradient-to-r from-amber-300 to-yellow-400 text-stone-950 border-transparent shadow-md font-black" 
+                    ? "bg-gradient-to-r from-[#ecc573] to-[#dfb256] text-stone-950 border-transparent shadow-[0_0_12px_rgba(236,197,115,0.4)] font-black" 
                     : "bg-stone-900/40 text-stone-400 border-white/5"
                 )}
               >
@@ -218,72 +309,72 @@ export default function Home() {
                 
                 {/* Occasion Section */}
                 <div>
-                  <h3 className="text-lg font-bold text-amber-100 mb-4">{t.step_1_title}</h3>
+                  <h3 className="text-lg font-bold text-white mb-4">{t.step_1_title}</h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     {occasionsList.map((occ) => {
-                      const isSelected = selectedOccasion === occ.id;
-                      return (
-                        <button
-                          key={occ.id}
-                          onClick={() => setSelectedOccasion(occ.id)}
-                          className={cn(
-                            "occasion-card p-4 rounded-2xl text-center cursor-pointer flex flex-col items-center justify-center relative",
-                            isSelected 
-                              ? "bg-white/10 shadow-[0_12px_24px_rgba(243,229,171,0.08)] border-amber-400/50" 
-                              : "bg-white/5 border-white/5"
-                          )}
-                        >
-                          <span className="text-3xl mb-2">{occ.icon}</span>
-                          <span className={cn("text-xs font-bold transition-colors", isSelected ? "text-amber-300" : "text-stone-300")}>
-                            {t.occasions[occ.dictKey as keyof typeof t.occasions]}
-                          </span>
-                          {isSelected && (
-                            <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-amber-400"></span>
-                          )}
-                        </button>
-                      );
+                       const isSelected = selectedOccasion === occ.id;
+                       return (
+                         <button
+                           key={occ.id}
+                           onClick={() => setSelectedOccasion(occ.id)}
+                           className={cn(
+                             "occasion-card p-4 rounded-2xl text-center cursor-pointer flex flex-col items-center justify-center relative",
+                             isSelected 
+                               ? "bg-white/10 shadow-[0_0_15px_rgba(236,197,115,0.15)] border-[#ecc573]/50" 
+                               : "bg-white/5 border-white/5"
+                           )}
+                         >
+                           <span className="text-3xl mb-2">{occ.icon}</span>
+                           <span className={cn("text-xs font-bold transition-colors", isSelected ? "text-[#ecc573]" : "text-stone-300")}>
+                             {t.occasions[occ.dictKey as keyof typeof t.occasions]}
+                           </span>
+                           {isSelected && (
+                             <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-pink-500 shadow-[0_0_8px_rgba(219,39,119,0.8)]"></span>
+                           )}
+                         </button>
+                       );
                     })}
                   </div>
                 </div>
 
                 {/* Categories Section */}
                 <div>
-                  <h3 className="text-lg font-bold text-amber-100 mb-4">{t.step_2_title}</h3>
+                  <h3 className="text-lg font-bold text-white mb-4">{t.step_2_title}</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {categoriesList.map((cat) => {
-                      const isSelected = selectedCategory === cat.id;
-                      const catDict = t.categories[cat.dictKey as keyof typeof t.categories];
-                      return (
-                        <button
-                          key={cat.id}
-                          onClick={() => setSelectedCategory(cat.id)}
-                          className={cn(
-                            "category-card p-5 rounded-2xl text-start cursor-pointer flex flex-col justify-between h-full relative",
-                            isSelected 
-                              ? "bg-white/10 shadow-[0_12px_24px_rgba(243,229,171,0.08)] border-amber-400/50" 
-                              : "bg-white/5 border-white/5"
-                          )}
-                        >
-                          <div className="flex justify-between items-start w-full mb-3">
-                            <span className="text-3xl">{cat.icon}</span>
-                            <span className={cn("text-[10px] px-2.5 py-0.5 rounded-full font-bold", isSelected ? "bg-amber-400/10 text-amber-300" : "bg-white/5 text-stone-400")}>
-                              {catDict.tag}
-                            </span>
-                          </div>
-                          
-                          <div className="mt-2">
-                            <h4 className="font-bold text-sm text-stone-100 mb-1">{catDict.title}</h4>
-                            <p className="text-xs text-stone-400 leading-relaxed line-clamp-2 mb-4 font-medium">{catDict.desc}</p>
-                          </div>
+                       const isSelected = selectedCategory === cat.id;
+                       const catDict = t.categories[cat.dictKey as keyof typeof t.categories];
+                       return (
+                         <button
+                           key={cat.id}
+                           onClick={() => setSelectedCategory(cat.id)}
+                           className={cn(
+                             "category-card p-5 rounded-2xl text-start cursor-pointer flex flex-col justify-between h-full relative",
+                             isSelected 
+                               ? "bg-white/10 shadow-[0_0_15px_rgba(236,197,115,0.15)] border-[#ecc573]/50" 
+                               : "bg-white/5 border-white/5"
+                           )}
+                         >
+                           <div className="flex justify-between items-start w-full mb-3">
+                             <span className="text-3xl">{cat.icon}</span>
+                             <span className={cn("text-[10px] px-2.5 py-0.5 rounded-full font-bold", isSelected ? "bg-[#ecc573]/10 text-[#ecc573]" : "bg-white/5 text-stone-400")}>
+                               {catDict.tag}
+                             </span>
+                           </div>
+                           
+                           <div className="mt-2">
+                             <h4 className="font-bold text-sm text-stone-100 mb-1">{catDict.title}</h4>
+                             <p className="text-xs text-stone-400 leading-relaxed line-clamp-2 mb-4 font-medium">{catDict.desc}</p>
+                           </div>
 
-                          <div className="flex justify-between items-center w-full pt-2 border-t border-white/5 mt-auto">
-                            <span className="text-xs font-extrabold text-amber-200">{catDict.price}</span>
-                            <div className={cn("w-5 h-5 rounded-full flex items-center justify-center border transition-all", isSelected ? "bg-amber-400 border-transparent text-stone-950" : "border-stone-600 text-transparent")}>
-                              <Check className="w-3 h-3" />
-                            </div>
-                          </div>
-                        </button>
-                      );
+                           <div className="flex justify-between items-center w-full pt-2 border-t border-white/5 mt-auto">
+                             <span className="text-xs font-extrabold text-amber-200">{catDict.price}</span>
+                             <div className={cn("w-5 h-5 rounded-full flex items-center justify-center border transition-all", isSelected ? "bg-[#ecc573] border-transparent text-stone-950 shadow-[0_0_8px_rgba(236,197,115,0.5)]" : "border-stone-600 text-transparent")}>
+                               <Check className="w-3 h-3" />
+                             </div>
+                           </div>
+                         </button>
+                       );
                     })}
                   </div>
                 </div>
@@ -292,7 +383,7 @@ export default function Home() {
                 <div className="flex justify-end pt-4">
                   <button 
                     onClick={handleNext} 
-                    className="px-6 py-3 bg-gradient-to-r from-amber-300 to-yellow-400 text-stone-950 rounded-full font-black text-xs flex items-center gap-2 hover:brightness-110 active:scale-95 transition-all shadow-md cursor-pointer"
+                    className="px-6 py-3 bg-gradient-to-r from-[#ecc573] via-[#dfb256] to-[#ecc573] text-stone-950 rounded-full font-black text-xs flex items-center gap-2 hover:brightness-110 active:scale-95 hover:shadow-[0_0_20px_rgba(236,197,115,0.4)] transition-all shadow-md cursor-pointer"
                   >
                     {t.next} <ArrowIcon className="w-4 h-4" />
                   </button>
@@ -304,7 +395,7 @@ export default function Home() {
             {step === 2 && (
               <motion.div key="step2" variants={slideVariants} initial="initial" animate="animate" exit="exit" className="space-y-6">
                 <div>
-                  <h3 className="text-lg font-bold text-amber-100">{t.personalize_title}</h3>
+                  <h3 className="text-lg font-bold text-white">{t.personalize_title}</h3>
                   <p className="text-xs text-amber-200/50 font-medium">{t.personalize_desc}</p>
                 </div>
 
@@ -339,9 +430,9 @@ export default function Home() {
                         type="button"
                         onClick={handleGenerateAI}
                         disabled={isGeneratingMessage}
-                        className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-300 hover:text-amber-250 transition disabled:opacity-50 cursor-pointer"
+                        className="inline-flex items-center gap-1.5 text-xs font-bold text-[#ecc573] hover:text-[#dfb256] transition disabled:opacity-50 cursor-pointer"
                       >
-                        <Sparkles className="w-3.5 h-3.5" />
+                        <Sparkles className="w-3.5 h-3.5 text-pink-500" />
                         {isGeneratingMessage ? (lang === "ar" ? "جاري التفكير..." : "Thinking...") : (lang === "ar" ? "اقتراح ذكي بالـ AI" : "AI Message Suggestion")}
                       </button>
                     </div>
@@ -366,7 +457,7 @@ export default function Home() {
                   </button>
                   <button 
                     onClick={handleNext} 
-                    className="px-6 py-3 bg-gradient-to-r from-amber-300 to-yellow-400 text-stone-950 rounded-full font-black text-xs flex items-center gap-2 hover:brightness-110 active:scale-95 transition-all shadow-md cursor-pointer"
+                    className="px-6 py-3 bg-gradient-to-r from-[#ecc573] via-[#dfb256] to-[#ecc573] text-stone-950 rounded-full font-black text-xs flex items-center gap-2 hover:brightness-110 active:scale-95 hover:shadow-[0_0_20px_rgba(236,197,115,0.4)] transition-all shadow-md cursor-pointer"
                   >
                     {t.continue_payment} <ArrowIcon className="w-4 h-4" />
                   </button>
@@ -380,12 +471,12 @@ export default function Home() {
                 {paymentState === "idle" && (
                   <div className="w-full max-w-sm flex flex-col items-center">
                     <span className="text-5xl mb-3">💳</span>
-                    <h3 className="text-xl font-bold text-amber-100 mb-1">{t.secure_payment}</h3>
-                    <p className="text-xs text-amber-205/50 font-medium max-w-xs mb-8 leading-relaxed">{t.secure_payment_desc}</p>
+                    <h3 className="text-xl font-bold text-white mb-1">{t.secure_payment}</h3>
+                    <p className="text-xs text-amber-200/50 font-medium max-w-xs mb-8 leading-relaxed">{t.secure_payment_desc}</p>
                     
                     <button 
                       onClick={handleCheckout} 
-                      className="w-full py-3.5 bg-white text-stone-950 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer mb-3 hover:bg-stone-50"
+                      className="w-full py-3.5 bg-white text-stone-950 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer mb-3 hover:bg-stone-50 hover:shadow-[0_0_15px_rgba(255,255,255,0.3)]"
                     >
                       <svg viewBox="0 0 24 24" className="w-4 h-4 fill-stone-950"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 4.17c.66-.81 1.11-1.93.99-3.06-1 .04-2.21.67-2.93 1.49-.62.69-1.16 1.84-1.01 2.96 1.12.09 2.27-.58 2.95-1.39z"/></svg>
                       {t.pay_apple}
@@ -393,7 +484,7 @@ export default function Home() {
                     
                     <button 
                       onClick={handleCheckout} 
-                      className="w-full py-3.5 bg-gradient-to-r from-amber-300 to-yellow-400 text-stone-950 rounded-2xl font-black text-xs flex items-center justify-center gap-2 hover:brightness-110 transition-all shadow-md active:scale-95 cursor-pointer"
+                      className="w-full py-3.5 bg-gradient-to-r from-[#ecc573] via-[#dfb256] to-[#ecc573] text-stone-950 rounded-2xl font-black text-xs flex items-center justify-center gap-2 hover:brightness-110 transition-all shadow-md active:scale-95 hover:shadow-[0_0_20px_rgba(236,197,115,0.4)] cursor-pointer"
                     >
                       <CreditCard className="w-4 h-4" /> {t.pay_card}
                     </button>
@@ -409,36 +500,36 @@ export default function Home() {
 
                 {paymentState === "processing" && (
                   <div className="flex flex-col items-center py-12">
-                    <Loader2 className="w-10 h-10 text-amber-400 animate-spin mb-4" />
-                    <h4 className="text-base font-bold text-amber-100 mb-1">{t.processing_payment}</h4>
-                    <p className="text-xs text-amber-205/50 font-medium">{t.processing_desc}</p>
+                    <Loader2 className="w-10 h-10 text-[#ecc573] animate-spin mb-4" />
+                    <h4 className="text-base font-bold text-white mb-1">{t.processing_payment}</h4>
+                    <p className="text-xs text-amber-200/50 font-medium">{t.processing_desc}</p>
                   </div>
                 )}
 
                 {paymentState === "success" && (
                   <div className="w-full max-w-md flex flex-col items-center">
                     <span className="text-6xl mb-4 drop-shadow-md">🎉</span>
-                    <h3 className="text-2xl font-black text-amber-150 mb-2">{t.success_title}</h3>
-                    <p className="text-xs text-amber-205/55 font-medium leading-relaxed max-w-xs mb-8">{t.success_desc}</p>
+                    <h3 className="text-2xl font-black text-white mb-2">{t.success_title}</h3>
+                    <p className="text-xs text-amber-200/55 font-medium leading-relaxed max-w-xs mb-8">{t.success_desc}</p>
                     
                     <div className="w-full bg-stone-900/60 border border-white/5 rounded-2xl p-2 flex items-center justify-between gap-4 mb-8">
                       <input 
                         type="text" 
                         readOnly 
-                        value={`https://16-up2ugift-v3.vercel.app/gift/${generatedLink}`} 
+                        value={shareUrl} 
                         className="bg-transparent border-none text-stone-300 w-full outline-none text-xs font-mono px-3 font-semibold text-left direction-ltr" 
                         dir="ltr"
                       />
                       <button 
-                        onClick={() => navigator.clipboard.writeText(`https://16-up2ugift-v3.vercel.app/gift/${generatedLink}`)} 
-                        className="px-4 py-2 bg-gradient-to-r from-amber-300 to-yellow-400 text-stone-950 font-black rounded-xl text-xs transition-all shadow-md active:scale-95"
+                        onClick={() => navigator.clipboard.writeText(shareUrl)} 
+                        className="px-4 py-2 bg-gradient-to-r from-[#ecc573] to-[#dfb256] text-stone-950 font-black rounded-xl text-xs transition-all shadow-md active:scale-95 hover:brightness-110"
                       >
                         {t.copy_link}
                       </button>
                     </div>
 
                     <Link href={`/gift/${generatedLink}`}>
-                      <button className="px-6 py-2.5 bg-white/5 border border-white/5 text-amber-250 rounded-full font-bold text-xs hover:bg-white/10 transition-all flex items-center gap-1.5 shadow-sm">
+                      <button className="px-6 py-2.5 bg-white/5 border border-white/5 text-[#ecc573] rounded-full font-bold text-xs hover:bg-white/10 transition-all flex items-center gap-1.5 shadow-sm">
                         {t.preview_gift} <ArrowIcon className="w-3.5 h-3.5" />
                       </button>
                     </Link>
