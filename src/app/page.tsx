@@ -11,6 +11,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { arAI, enAI } from "@/dictionaries/aiTemplates";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import ParticleField from "@/components/ParticleField";
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -107,6 +108,7 @@ export default function Home() {
   }, []);
 
   const handleCheckout = async () => {
+    setStep(3);
     setPaymentState("processing");
     
     setTimeout(async () => {
@@ -138,94 +140,8 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen pb-24 overflow-hidden">
-      {/* Premium Floating Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        {/* Floating 3D-like Gift Box 1 */}
-        <motion.div 
-          animate={{ 
-            y: [0, -25, 0],
-            x: [0, 10, 0],
-            rotate: [0, 15, -15, 0]
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          className="absolute top-[20%] left-[5%] md:left-[8%] text-6xl md:text-7xl drop-shadow-[0_15px_20px_rgba(139,92,246,0.35)] filter opacity-80 select-none"
-        >
-          🎁
-        </motion.div>
-
-        {/* Floating 3D-like Gift Box 2 */}
-        <motion.div 
-          animate={{ 
-            y: [0, -30, 0],
-            x: [0, -15, 0],
-            rotate: [0, -10, 10, 0]
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1.5
-          }}
-          className="absolute top-[45%] right-[4%] md:right-[6%] text-5xl md:text-6xl drop-shadow-[0_15px_20px_rgba(219,39,119,0.35)] filter opacity-75 select-none"
-        >
-          💝
-        </motion.div>
-
-        {/* Floating Sparkle / Star 1 */}
-        <motion.div 
-          animate={{ 
-            scale: [0.8, 1.2, 0.8],
-            opacity: [0.4, 0.9, 0.4]
-          }}
-          transition={{
-            duration: 5,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          className="absolute top-[12%] right-[20%] text-amber-200 text-3xl drop-shadow-[0_0_8px_rgba(236,197,115,0.6)] select-none"
-        >
-          ✨
-        </motion.div>
-
-        {/* Floating Sparkle / Star 2 */}
-        <motion.div 
-          animate={{ 
-            scale: [1, 1.3, 1],
-            opacity: [0.3, 0.8, 0.3]
-          }}
-          transition={{
-            duration: 7,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 2
-          }}
-          className="absolute bottom-[35%] left-[6%] text-purple-400 text-2xl drop-shadow-[0_0_8px_rgba(139,92,246,0.5)] select-none"
-        >
-          ✨
-        </motion.div>
-
-        {/* Floating Hearts / Love 1 */}
-        <motion.div 
-          animate={{ 
-            y: [0, -20, 0],
-            x: [0, 5, 0],
-            scale: [0.9, 1.1, 0.9]
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 3
-          }}
-          className="absolute bottom-[20%] right-[12%] text-pink-400 text-4xl drop-shadow-[0_0_12px_rgba(219,39,119,0.5)] select-none"
-        >
-          💖
-        </motion.div>
-      </div>
+      {/* Premium Floating Particle Field */}
+      <ParticleField />
 
       {/* Header bar */}
       <header className="w-full py-6 px-6 md:px-12 flex justify-between items-center max-w-7xl mx-auto relative z-20">
@@ -456,10 +372,10 @@ export default function Home() {
                     {isRtl ? <ArrowRight className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />} {t.back}
                   </button>
                   <button 
-                    onClick={handleNext} 
+                    onClick={handleCheckout} 
                     className="px-6 py-3 bg-gradient-to-r from-[#ecc573] via-[#dfb256] to-[#ecc573] text-stone-950 rounded-full font-black text-xs flex items-center gap-2 hover:brightness-110 active:scale-95 hover:shadow-[0_0_20px_rgba(236,197,115,0.4)] transition-all shadow-md cursor-pointer"
                   >
-                    {t.continue_payment} <ArrowIcon className="w-4 h-4" />
+                    {lang === "ar" ? "تأكيد وإنشاء الهدية" : "Confirm & Create Gift"} <ArrowIcon className="w-4 h-4" />
                   </button>
                 </div>
               </motion.div>

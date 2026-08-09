@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 import confetti from "canvas-confetti";
 import Link from "next/link";
+import GiftBox from "@/components/GiftBox3D";
+import ParticleField from "@/components/ParticleField";
 import { useLanguage } from "@/context/LanguageContext";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -52,6 +54,7 @@ export default function GiftInteractiveClient({ giftData }: { giftData: GiftData
 
   return (
     <div className="min-h-screen text-[#fefcfb] flex flex-col items-center justify-center p-6 relative overflow-hidden font-sans">
+      <ParticleField />
       
       <AnimatePresence mode="wait">
         {step === 0 && (
@@ -90,37 +93,18 @@ export default function GiftInteractiveClient({ giftData }: { giftData: GiftData
             initial={{ opacity: 0, scale: 0.95 }} 
             animate={{ opacity: 1, scale: 1 }} 
             exit={{ opacity: 0, scale: 1.05 }} 
-            className="z-10 text-center flex flex-col items-center glass-panel p-10 max-w-md w-full relative"
+            className="z-10 text-center flex flex-col items-center glass-panel p-10 max-w-md w-full relative overflow-hidden"
           >
-            <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center text-4xl mx-auto mb-6 shadow-inner select-none">
-              🎁
-            </div>
+            <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-pink-500 to-transparent"></div>
             
             <h2 className="text-xl font-bold mb-2 text-white">{t.receiver.locked_title}</h2>
             <p className="text-xs text-stone-400 mb-8 font-semibold leading-relaxed">{t.receiver.locked_desc}</p>
             
-            <button 
-              onClick={handleTap} 
-              className={cn(
-                "w-36 h-36 rounded-full flex flex-col items-center justify-center transition-all duration-300 outline-none shadow-xl border cursor-pointer select-none",
-                taps === 0 ? 'bg-white/5 border-white/5 hover:border-[#ecc573]/50' : 
-                taps === 1 ? 'bg-[#ecc573]/10 border-[#ecc573]/30 scale-105' : 
-                'bg-[#ecc573]/20 border-[#ecc573]/50 scale-110'
-              )}
-            >
-              <span className="text-5xl animate-bounce">💝</span>
-            </button>
-            
-            <div className="mt-8 flex gap-2">
-              {[0, 1, 2].map(i => (
-                <div 
-                  key={i} 
-                  className={cn(
-                    "w-2 h-2 rounded-full transition-all duration-300", 
-                    i < taps ? 'bg-pink-500 w-4 shadow-sm shadow-pink-500/50' : 'bg-stone-700'
-                  )} 
-                />
-              ))}
+            <div className="w-full h-64 flex items-center justify-center">
+              <GiftBox onOpen={() => {
+                triggerConfetti();
+                setTimeout(() => setStep(2), 1200);
+              }} />
             </div>
           </motion.div>
         )}

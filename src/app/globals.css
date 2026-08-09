@@ -111,3 +111,15 @@ body::before {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(236, 197, 115, 0.35);
 }
+
+/* Confetti Fall Animation for GiftBox3D */
+@keyframes confettiFall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}

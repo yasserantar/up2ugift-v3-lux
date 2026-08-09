@@ -1,6 +1,7 @@
 "use client";
 
-import { signIn } from "next-auth/react";
+export const dynamic = "force-dynamic";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Gift, Lock, Loader2 } from "lucide-react";
@@ -17,17 +18,23 @@ export default function AdminLogin() {
     setLoading(true);
     setError("");
 
-    const res = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    try {
+      const { signIn } = await import("next-auth/react");
+      const res = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
 
-    if (res?.error) {
-      setError("بيانات الدخول غير صحيحة");
+      if (res?.error) {
+        setError("بيانات الدخول غير صحيحة");
+        setLoading(false);
+      } else {
+        router.push("/admin");
+      }
+    } catch {
+      setError("حدث خطأ أثناء تسجيل الدخول");
       setLoading(false);
-    } else {
-      router.push("/admin");
     }
   };
 
