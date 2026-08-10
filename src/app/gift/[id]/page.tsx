@@ -1,13 +1,23 @@
 import React from "react";
 import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
 import GiftInteractiveClient from "./GiftInteractiveClient";
 
 export const dynamic = "force-dynamic";
 
-export default async function GiftPage({ params }: { params: Promise<{ id: string }> | { id: string } }) {
+export default async function GiftPage({ 
+  params,
+  searchParams
+}: { 
+  params: Promise<{ id: string }> | { id: string };
+  searchParams?: Promise<{ occ?: string; gender?: string; age?: string }> | { occ?: string; gender?: string; age?: string };
+}) {
   const resolvedParams = await params;
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  
   const id = resolvedParams.id;
+  const occasion = resolvedSearchParams.occ || "friend";
+  const gender = resolvedSearchParams.gender || "male";
+  const ageGroup = resolvedSearchParams.age || "youth";
 
   let gift = null;
   try {
@@ -23,10 +33,11 @@ export default async function GiftPage({ params }: { params: Promise<{ id: strin
     giftId: gift?.giftId || id,
     senderName: gift?.senderName || "مُهدِي سعيد",
     recipientName: gift?.recipientName || "صديق عزيز",
-    message: gift?.message || "أتمنى لك يوماً سعيداً ومليئاً بالبهجة والسرور! 🎁✨",
+    message: gift?.message || "أتمنى لك يوماً استثنائياً مليئاً بالبهجة والسرور والنجاح الدائم!",
     amount: gift?.amount ?? 50,
-    template: gift ? (gift.amount === 0 ? "digital" : "vouchers") : "birthday",
-    category: gift ? (gift.amount === 0 ? "digital" : "vouchers") : "digital",
+    occasion,
+    gender,
+    ageGroup,
   };
 
   return (

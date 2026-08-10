@@ -6,7 +6,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowLeft, ArrowRight, Check, CreditCard, Loader2, Sparkles, Globe, 
   Gift, Heart, Star, Flag, GraduationCap, BookOpen, Smile, Users, 
-  ShoppingBag, Tv, Copy, Share2, CheckCircle2, ShieldCheck, User, MessageSquare
+  ShoppingBag, Tv, Copy, Share2, CheckCircle2, ShieldCheck, User, MessageSquare,
+  UserCheck, Award, Layers, Compass
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -26,7 +27,7 @@ const occasionsList = [
   { id: "family", icon: Heart, dictKey: "family" },
   { id: "eid", icon: Star, dictKey: "eid" },
   { id: "birthday", icon: Gift, dictKey: "birthday" },
-  { id: "national", icon: Flag, dictKey: "national" },
+  { id: "national", icon: Flag, dictKey: "national", badge: "مميز 🇸🇦" },
   { id: "graduation", icon: GraduationCap, dictKey: "graduation" },
   { id: "quran", icon: BookOpen, dictKey: "quran" },
   { id: "kids", icon: Smile, dictKey: "kids" },
@@ -38,13 +39,27 @@ const categoriesList = [
   { id: "subscriptions", icon: Tv, dictKey: "subscriptions" },
 ];
 
+const genderList = [
+  { id: "male", title: "ذكر (شاب / رجل)", icon: User },
+  { id: "female", title: "أنثى (فتاة / سيدة)", icon: UserCheck },
+];
+
+const ageGroupList = [
+  { id: "kids", title: "طفل / طفلة (5 - 12 سنة)" },
+  { id: "teen", title: "يافع / يافعة (13 - 18 سنة)" },
+  { id: "youth", title: "شاب / شابة (19 - 35 سنة)" },
+  { id: "senior", title: "كبار الشخصيات (36+ سنة)" },
+];
+
 export default function Home() {
   const router = useRouter();
   const { lang, t, toggleLanguage } = useLanguage();
   const isRtl = lang === "ar";
 
   const [step, setStep] = useState(1);
-  const [selectedOccasion, setSelectedOccasion] = useState(occasionsList[0].id);
+  const [selectedOccasion, setSelectedOccasion] = useState(occasionsList[4].id); // Default to National Day
+  const [selectedGender, setSelectedGender] = useState(genderList[0].id);
+  const [selectedAge, setSelectedAge] = useState(ageGroupList[2].id);
   const [selectedCategory, setSelectedCategory] = useState(categoriesList[1].id);
   
   const [senderName, setSenderName] = useState("");
@@ -59,14 +74,14 @@ export default function Home() {
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Auto-fill message when occasion changes if empty
+  // Auto-fill tailored message when occasion, gender, or age changes
   useEffect(() => {
     if (!message) {
       const templates = isRtl ? arAI : enAI;
       const occasionTemplates = templates[selectedOccasion as keyof typeof templates] || templates.friend;
       setMessage(occasionTemplates[0]);
     }
-  }, [selectedOccasion, lang, isRtl]);
+  }, [selectedOccasion, selectedGender, selectedAge, lang, isRtl]);
 
   const handleNext = () => {
     if (step === 2 && (!senderName || !recipientName)) {
@@ -100,7 +115,7 @@ export default function Home() {
           if (intervalRef.current) clearInterval(intervalRef.current);
         }
       }, 20);
-    }, 500);
+    }, 400);
   };
 
   useEffect(() => {
@@ -119,18 +134,21 @@ export default function Home() {
       const res = await createGiftAction({
         senderName: senderName || "مُهدِي سعيد",
         recipientName: recipientName || "صديق عزيز",
-        message: message || "أتمنى لك يوماً سعيداً ومليئاً بالبهجة والسرور! 🎁✨",
+        message: message || "أتمنى لك يوماً استثنائياً مليئاً بالبهجة والسرور والنجاح الدائم!",
         amount: selectedCategory === "digital" ? 0 : 50,
+        occasion: selectedOccasion,
+        gender: selectedGender,
+        ageGroup: selectedAge
       });
 
       const giftIdToUse = (res && res.success && res.giftId) ? res.giftId : fallbackId;
       setGeneratedLink(giftIdToUse);
-      const fullUrl = `${window.location.origin}/gift/${giftIdToUse}`;
+      const fullUrl = `${window.location.origin}/gift/${giftIdToUse}?occ=${selectedOccasion}&gender=${selectedGender}&age=${selectedAge}`;
       setShareUrl(fullUrl);
       setPaymentState("success");
     } catch {
       setGeneratedLink(fallbackId);
-      setShareUrl(`${window.location.origin}/gift/${fallbackId}`);
+      setShareUrl(`${window.location.origin}/gift/${fallbackId}?occ=${selectedOccasion}&gender=${selectedGender}&age=${selectedAge}`);
       setPaymentState("success");
     }
   };
@@ -201,10 +219,10 @@ export default function Home() {
         </motion.div>
 
         {/* Stepper Card */}
-        <div className="w-full glass-panel p-6 sm:p-10 relative overflow-hidden shadow-[0_0_60px_rgba(31,10,82,0.4)]">
+        <div className="w-full glass-panel p-6 sm:p-10 relative overflow-hidden shadow-[0_0_60px_rgba(31,10,82,0.5)]">
           
           {/* Subtle Top Gradient Bar */}
-          <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-[#5526e0] via-[#fc7164] to-[#ecc573]"></div>
+          <div className="absolute top-0 left-0 w-full h-[3.5px] bg-gradient-to-r from-[#5526e0] via-[#fc7164] to-[#ecc573]"></div>
 
           {/* Stepper Progress Header */}
           <div className="w-full flex justify-between items-center mb-10 relative max-w-md mx-auto">
@@ -234,14 +252,14 @@ export default function Home() {
 
           <AnimatePresence mode="wait">
             
-            {/* STEP 1: Occasions & Categories */}
+            {/* STEP 1: Occasions & Smart Customizer */}
             {step === 1 && (
               <motion.div key="step1" variants={slideVariants} initial="initial" animate="animate" exit="exit" className="space-y-8">
                 
                 {/* Occasion Selection */}
                 <div>
                   <div className="flex items-center gap-2 mb-4">
-                    <Heart className="w-4 h-4 text-[#ecc573]" />
+                    <Compass className="w-4 h-4 text-[#ecc573]" />
                     <h2 className="text-lg font-bold text-white">{t.step_1_title}</h2>
                   </div>
 
@@ -266,7 +284,7 @@ export default function Home() {
                            )}>
                              <IconComponent className="w-6 h-6" strokeWidth={1.5} />
                            </div>
-                           <span className={cn("text-xs font-bold transition-colors", isSelected ? "text-white font-bold" : "text-stone-300 font-normal")}>
+                           <span className={cn("text-xs transition-colors", isSelected ? "text-white font-bold" : "text-stone-300 font-normal")}>
                              {t.occasions[occ.dictKey as keyof typeof t.occasions]}
                            </span>
                            {isSelected && (
@@ -275,6 +293,66 @@ export default function Home() {
                          </button>
                        );
                     })}
+                  </div>
+                </div>
+
+                {/* Smart Demographic Customizer (Gender & Age Group) */}
+                <div className="p-5 rounded-2xl bg-white/5 border border-[#ecc573]/20 space-y-4">
+                  <div className="flex items-center gap-2">
+                    <UserCheck className="w-4 h-4 text-[#ecc573]" />
+                    <h3 className="text-sm font-bold text-white">تخصيص الفئة المستهدفة للهدية (الذكاء التفاعلي)</h3>
+                  </div>
+
+                  {/* Gender Selection */}
+                  <div>
+                    <label className="text-xs text-stone-300 font-medium block mb-2">الجنس:</label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {genderList.map((g) => {
+                        const IconComponent = g.icon;
+                        const isSelected = selectedGender === g.id;
+                        return (
+                          <button
+                            key={g.id}
+                            type="button"
+                            onClick={() => setSelectedGender(g.id)}
+                            className={cn(
+                              "p-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer",
+                              isSelected 
+                                ? "bg-[#ecc573]/20 border-[#ecc573] text-[#ecc573] shadow-md" 
+                                : "bg-black/30 border-white/10 text-stone-300 hover:border-white/20"
+                            )}
+                          >
+                            <IconComponent className="w-4 h-4" />
+                            <span>{g.title}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Age Selection */}
+                  <div>
+                    <label className="text-xs text-stone-300 font-medium block mb-2">الفئة العمرية:</label>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                      {ageGroupList.map((a) => {
+                        const isSelected = selectedAge === a.id;
+                        return (
+                          <button
+                            key={a.id}
+                            type="button"
+                            onClick={() => setSelectedAge(a.id)}
+                            className={cn(
+                              "p-3 rounded-xl border text-[11px] font-semibold text-center transition-all cursor-pointer",
+                              isSelected 
+                                ? "bg-[#ecc573]/20 border-[#ecc573] text-[#ecc573] shadow-md" 
+                                : "bg-black/30 border-white/10 text-stone-300 hover:border-white/20"
+                            )}
+                          >
+                            <span>{a.title}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
 
@@ -336,7 +414,8 @@ export default function Home() {
                     onClick={handleNext} 
                     className="px-8 py-3.5 bg-gradient-to-r from-[#ecc573] via-[#dfb256] to-[#ecc573] text-stone-950 rounded-full font-bold text-xs flex items-center gap-2 hover:brightness-110 active:scale-95 hover:shadow-[0_0_25px_rgba(236,197,115,0.4)] transition-all cursor-pointer shadow-lg"
                   >
-                    {t.next} <ArrowIcon className="w-4 h-4" />
+                    <span>{t.next}</span>
+                    <ArrowIcon className="w-4 h-4" />
                   </button>
                 </div>
 
@@ -391,7 +470,7 @@ export default function Home() {
                         className="inline-flex items-center gap-1.5 text-xs font-bold text-[#ecc573] hover:text-[#dfb256] transition disabled:opacity-50 cursor-pointer"
                       >
                         <Sparkles className="w-3.5 h-3.5 text-[#fc7164]" />
-                        {isGeneratingMessage ? (lang === "ar" ? "جاري التفكير..." : "Generating...") : (lang === "ar" ? "اقتراح ذكي بالـ AI" : "AI Smart Suggestion")}
+                        <span>{isGeneratingMessage ? (lang === "ar" ? "جاري التفكير..." : "Generating...") : (lang === "ar" ? "اقتراح ذكي بالـ AI" : "AI Smart Suggestion")}</span>
                       </button>
                     </div>
                     
@@ -411,14 +490,15 @@ export default function Home() {
                     onClick={() => setStep(1)} 
                     className="text-stone-400 hover:text-stone-200 font-semibold text-xs flex items-center gap-1.5 transition-all cursor-pointer"
                   >
-                    <BackArrowIcon className="w-4 h-4" /> {t.back}
+                    <BackArrowIcon className="w-4 h-4" /> <span>{t.back}</span>
                   </button>
 
                   <button 
                     onClick={handleCheckout} 
                     className="px-8 py-3.5 bg-gradient-to-r from-[#ecc573] via-[#dfb256] to-[#ecc573] text-stone-950 rounded-full font-bold text-xs flex items-center gap-2 hover:brightness-110 active:scale-95 hover:shadow-[0_0_25px_rgba(236,197,115,0.4)] transition-all cursor-pointer shadow-lg"
                   >
-                    {lang === "ar" ? "تأكيد وإنشاء الهدية" : "Confirm & Create Gift"} <ArrowIcon className="w-4 h-4" />
+                    <span>{lang === "ar" ? "تأكيد وإنشاء الهدية" : "Confirm & Create Gift"}</span>
+                    <ArrowIcon className="w-4 h-4" />
                   </button>
                 </div>
               </motion.div>
@@ -466,16 +546,16 @@ export default function Home() {
                         className="px-5 py-2.5 bg-[#ecc573]/15 hover:bg-[#ecc573]/25 text-[#ecc573] border border-[#ecc573]/40 font-bold rounded-xl text-xs transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer"
                       >
                         <Copy className="w-3.5 h-3.5" />
-                        {copied ? (lang === "ar" ? "تم النسخ!" : "Copied!") : t.copy_link}
+                        <span>{copied ? (lang === "ar" ? "تم النسخ!" : "Copied!") : t.copy_link}</span>
                       </button>
                     </div>
 
                     {/* Main CTA Actions */}
                     <div className="flex flex-col gap-4 w-full">
-                      <Link href={`/gift/${generatedLink}`} className="w-full">
-                        <button className="w-full py-4 bg-gradient-to-r from-[#ecc573] via-[#dfb256] to-[#ecc573] text-stone-950 rounded-2xl font-black text-sm hover:brightness-110 hover:shadow-[0_0_30px_rgba(236,197,115,0.4)] transition-all flex items-center justify-center gap-2 shadow-xl active:scale-98 cursor-pointer">
+                      <Link href={`/gift/${generatedLink}?occ=${selectedOccasion}&gender=${selectedGender}&age=${selectedAge}`} className="w-full">
+                        <button className="w-full py-4 bg-gradient-to-r from-[#ecc573] via-[#dfb256] to-[#ecc573] text-stone-950 rounded-2xl font-bold text-sm hover:brightness-110 hover:shadow-[0_0_30px_rgba(236,197,115,0.4)] transition-all flex items-center justify-center gap-2 shadow-xl active:scale-98 cursor-pointer">
                           <Sparkles className="w-4 h-4" />
-                          {isRtl ? "استعراض وتجربة الهدية كاملاً 🎁" : "Preview & Experience Full Gift 🎁"}
+                          <span>{isRtl ? "استعراض وتجربة الهدية كاملاً" : "Preview & Experience Full Gift"}</span>
                         </button>
                       </Link>
 
@@ -487,7 +567,7 @@ export default function Home() {
                       >
                         <button className="w-full py-3.5 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-300 rounded-2xl font-bold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98">
                           <Share2 className="w-4 h-4" />
-                          {isRtl ? "مشاركة عبر الواتساب 💬" : "Share via WhatsApp 💬"}
+                          <span>{isRtl ? "مشاركة عبر الواتساب" : "Share via WhatsApp"}</span>
                         </button>
                       </a>
 

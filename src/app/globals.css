@@ -7,8 +7,8 @@
 
     /* Abdul Osama Luxury Color Palette */
     --bg-ink: #07051c;
-    --bg-ink-card: rgba(16, 12, 44, 0.78);
-    --border-luxury: rgba(236, 197, 115, 0.18);
+    --bg-ink-card: rgba(16, 12, 44, 0.85);
+    --border-luxury: rgba(236, 197, 115, 0.22);
     --border-subtle: rgba(255, 255, 255, 0.08);
 
     --color-gold: #ecc573;
@@ -16,9 +16,14 @@
     --color-indigo: #1f0a52;
     --color-violet: #5526e0;
     --color-salmon: #fc7164;
+    --color-cyan: #34e0e8;
     --color-mint: #3ce0a6;
     --color-paper: #fcfbf8;
   }
+}
+
+* {
+  font-family: var(--font-arabic);
 }
 
 body {
@@ -42,95 +47,135 @@ body::before {
   height: 100%;
   z-index: -10;
   background: 
-    radial-gradient(circle at 15% 15%, rgba(31, 10, 82, 0.45) 0%, transparent 50%),
-    radial-gradient(circle at 85% 20%, rgba(85, 38, 224, 0.22) 0%, transparent 45%),
-    radial-gradient(circle at 50% 60%, rgba(252, 113, 100, 0.12) 0%, transparent 50%),
-    radial-gradient(circle at 80% 85%, rgba(236, 197, 115, 0.10) 0%, transparent 40%),
-    radial-gradient(circle at 20% 80%, rgba(31, 10, 82, 0.35) 0%, transparent 50%);
-  filter: blur(50px);
+    radial-gradient(circle at 15% 15%, rgba(31, 10, 82, 0.55) 0%, transparent 50%),
+    radial-gradient(circle at 85% 20%, rgba(85, 38, 224, 0.3) 0%, transparent 45%),
+    radial-gradient(circle at 50% 60%, rgba(252, 113, 100, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 85%, rgba(236, 197, 115, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 20% 80%, rgba(52, 224, 232, 0.10) 0%, transparent 50%);
+  filter: blur(55px);
   pointer-events: none;
+  animation: floatBackground 12s ease-in-out infinite alternate;
 }
 
-/* Floating Halo Animation */
+@keyframes floatBackground {
+  0% { transform: scale(1) translateY(0); }
+  100% { transform: scale(1.05) translateY(-15px); }
+}
+
+/* Keyframe Animations */
 @keyframes haloFloat {
   0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-12px) rotate(3deg); }
+  50% { transform: translateY(-10px) rotate(2deg); }
 }
 
 @keyframes chipFloat {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-6px); }
+  50% { transform: translateY(-5px); }
 }
 
 @keyframes pulseGlow {
   0%, 100% { opacity: 0.6; transform: scale(1); }
-  50% { opacity: 0.95; transform: scale(1.03); }
+  50% { opacity: 0.95; transform: scale(1.04); }
+}
+
+@keyframes shimmerText {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
 }
 
 .animate-halo {
-  animation: haloFloat 8s ease-in-out infinite;
+  animation: haloFloat 7s ease-in-out infinite;
 }
 
 .animate-chip {
-  animation: chipFloat 5s ease-in-out infinite;
+  animation: chipFloat 4s ease-in-out infinite;
 }
 
 .animate-pulse-glow {
-  animation: pulseGlow 4s ease-in-out infinite;
+  animation: pulseGlow 3.5s ease-in-out infinite;
 }
 
 /* Glassmorphism Panel */
 .glass-panel {
   background: var(--bg-ink-card);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
   border: 1px solid var(--border-luxury);
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.15);
   border-radius: 2rem;
 }
 
 /* Luxury Input Fields */
 .premium-input {
-  background: rgba(7, 5, 28, 0.6);
-  border: 1.5px solid rgba(236, 197, 115, 0.15);
+  background: rgba(7, 5, 28, 0.75);
+  border: 1.5px solid rgba(236, 197, 115, 0.2);
   color: #fcfbf8;
   border-radius: 1rem;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  font-weight: 500;
+  font-weight: 400;
+  font-size: 0.875rem;
 }
 
 .premium-input:focus {
-  background: rgba(7, 5, 28, 0.85);
+  background: rgba(7, 5, 28, 0.95);
   border-color: #ecc573;
-  box-shadow: 0 0 0 4px rgba(236, 197, 115, 0.15);
+  box-shadow: 0 0 0 4px rgba(236, 197, 115, 0.18);
   outline: none;
 }
 
 /* Card Hover Effects */
 .occasion-card, .category-card {
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  border: 1.5px solid rgba(255, 255, 255, 0.05);
-  background: rgba(16, 12, 44, 0.5);
+  border: 1.5px solid rgba(255, 255, 255, 0.06);
+  background: rgba(16, 12, 44, 0.6);
 }
 
 .occasion-card:hover, .category-card:hover {
   transform: translateY(-5px) scale(1.02);
-  background: rgba(236, 197, 115, 0.08);
-  border-color: rgba(236, 197, 115, 0.3);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(236, 197, 115, 0.15);
+  background: rgba(236, 197, 115, 0.10);
+  border-color: rgba(236, 197, 115, 0.4);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(236, 197, 115, 0.2);
 }
 
 /* Luxury Gradient Text */
 .luxury-gradient-text {
   background: linear-gradient(135deg, #ecc573 0%, #fc7164 45%, #5526e0 100%);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  animation: shimmerText 8s linear infinite;
 }
 
 .gold-gradient-text {
   background: linear-gradient(135deg, #ecc573 0%, #dfb256 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.saudi-national-gradient {
+  background: linear-gradient(135deg, #10b981 0%, #ecc573 50%, #059669 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Buttons */
+.btn-gold {
+  background: linear-gradient(135deg, #ecc573 0%, #dfb256 100%);
+  color: #07051c;
+  font-weight: 700;
+  border-radius: 9999px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 10px 25px rgba(236, 197, 115, 0.3);
+}
+
+.btn-gold:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 15px 35px rgba(236, 197, 115, 0.5);
+  transform: translateY(-2px);
+}
+
+.btn-gold:active {
+  transform: scale(0.98);
 }
 
 /* Scrollbar */
@@ -141,9 +186,9 @@ body::before {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(236, 197, 115, 0.2);
+  background: rgba(236, 197, 115, 0.25);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(236, 197, 115, 0.4);
+  background: rgba(236, 197, 115, 0.45);
 }
