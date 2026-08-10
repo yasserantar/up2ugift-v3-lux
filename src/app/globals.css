@@ -1,34 +1,38 @@
 @import "tailwindcss";
 
-@theme {
-  --font-cairo: "Cairo", sans-serif;
-  --font-inter: "Inter", sans-serif;
-}
-
 @layer base {
   :root {
-    --background: #06020a; /* Luxurious Deep Black-Purple */
-    --foreground: #fefcfb;
-    
-    --card: rgba(12, 6, 22, 0.75); /* Deep Dark Translucent Glass */
-    --card-border: rgba(236, 197, 115, 0.18); /* Luxury Gold Tint border */
-    --card-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.8);
-    
-    --primary: #ecc573; /* Luxurious Gold */
-    --primary-hover: #dfb256;
+    --font-arabic: 'IBM Plex Sans Arabic', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    /* Abdul Osama Luxury Color Palette */
+    --bg-ink: #07051c;
+    --bg-ink-card: rgba(16, 12, 44, 0.78);
+    --border-luxury: rgba(236, 197, 115, 0.18);
+    --border-subtle: rgba(255, 255, 255, 0.08);
+
+    --color-gold: #ecc573;
+    --color-gold-hover: #dfb256;
+    --color-indigo: #1f0a52;
+    --color-violet: #5526e0;
+    --color-salmon: #fc7164;
+    --color-mint: #3ce0a6;
+    --color-paper: #fcfbf8;
   }
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
+  font-family: var(--font-arabic);
+  background-color: var(--bg-ink);
+  color: var(--color-paper);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
   position: relative;
+  font-weight: 400; /* Strict regular body text */
 }
 
-/* Luxurious mesh background with deep violet, gold and pink glows */
+/* Luxury Glowing Background Mesh inspired by abdulosama.com */
 body::before {
   content: "";
   position: fixed;
@@ -38,66 +42,98 @@ body::before {
   height: 100%;
   z-index: -10;
   background: 
-    radial-gradient(at 10% 20%, rgba(139, 92, 246, 0.18) 0px, transparent 45%), /* Violet glow */
-    radial-gradient(at 90% 10%, rgba(219, 39, 119, 0.12) 0px, transparent 40%), /* Pink accent */
-    radial-gradient(at 50% 50%, rgba(236, 197, 115, 0.06) 0px, transparent 50%), /* Gold glow */
-    radial-gradient(at 80% 90%, rgba(139, 92, 246, 0.1) 0px, transparent 40%),  /* Violet bottom */
-    radial-gradient(at 20% 80%, rgba(219, 39, 119, 0.08) 0px, transparent 40%); /* Pink bottom */
-  filter: blur(40px);
+    radial-gradient(circle at 15% 15%, rgba(31, 10, 82, 0.45) 0%, transparent 50%),
+    radial-gradient(circle at 85% 20%, rgba(85, 38, 224, 0.22) 0%, transparent 45%),
+    radial-gradient(circle at 50% 60%, rgba(252, 113, 100, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 80% 85%, rgba(236, 197, 115, 0.10) 0%, transparent 40%),
+    radial-gradient(circle at 20% 80%, rgba(31, 10, 82, 0.35) 0%, transparent 50%);
+  filter: blur(50px);
   pointer-events: none;
 }
 
-/* Luxury Glassmorphism Panel */
-.glass-panel {
-  background: var(--card);
-  backdrop-filter: blur(28px) saturate(160%);
-  -webkit-backdrop-filter: blur(28px) saturate(160%);
-  border: 1px solid var(--card-border);
-  box-shadow: var(--card-shadow);
-  border-radius: 2.25rem;
+/* Floating Halo Animation */
+@keyframes haloFloat {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(3deg); }
 }
 
-/* Premium Dark Mode Input */
+@keyframes chipFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 0.95; transform: scale(1.03); }
+}
+
+.animate-halo {
+  animation: haloFloat 8s ease-in-out infinite;
+}
+
+.animate-chip {
+  animation: chipFloat 5s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+
+/* Glassmorphism Panel */
+.glass-panel {
+  background: var(--bg-ink-card);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid var(--border-luxury);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  border-radius: 2rem;
+}
+
+/* Luxury Input Fields */
 .premium-input {
-  background: rgba(0, 0, 0, 0.3);
-  border: 1.5px solid rgba(236, 197, 115, 0.1);
-  color: #fefcfb;
-  border-radius: 1.25rem;
+  background: rgba(7, 5, 28, 0.6);
+  border: 1.5px solid rgba(236, 197, 115, 0.15);
+  color: #fcfbf8;
+  border-radius: 1rem;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   font-weight: 500;
 }
 
 .premium-input:focus {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(7, 5, 28, 0.85);
   border-color: #ecc573;
   box-shadow: 0 0 0 4px rgba(236, 197, 115, 0.15);
   outline: none;
 }
 
-/* Interactive Cards */
-.occasion-card {
+/* Card Hover Effects */
+.occasion-card, .category-card {
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  border: 1.5px solid rgba(255, 255, 255, 0.03);
-}
-.occasion-card:hover {
-  transform: translateY(-4px) scale(1.02);
-  background: rgba(236, 197, 115, 0.08);
-  border-color: rgba(236, 197, 115, 0.25);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  border: 1.5px solid rgba(255, 255, 255, 0.05);
+  background: rgba(16, 12, 44, 0.5);
 }
 
-.category-card {
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  border: 1.5px solid rgba(255, 255, 255, 0.03);
-}
-.category-card:hover {
-  transform: translateY(-4px) scale(1.02);
+.occasion-card:hover, .category-card:hover {
+  transform: translateY(-5px) scale(1.02);
   background: rgba(236, 197, 115, 0.08);
-  border-color: rgba(236, 197, 115, 0.25);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  border-color: rgba(236, 197, 115, 0.3);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(236, 197, 115, 0.15);
 }
 
-/* Custom Scrollbar */
+/* Luxury Gradient Text */
+.luxury-gradient-text {
+  background: linear-gradient(135deg, #ecc573 0%, #fc7164 45%, #5526e0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, #ecc573 0%, #dfb256 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -105,21 +141,9 @@ body::before {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(236, 197, 115, 0.15);
+  background: rgba(236, 197, 115, 0.2);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(236, 197, 115, 0.35);
-}
-
-/* Confetti Fall Animation for GiftBox3D */
-@keyframes confettiFall {
-  0% {
-    transform: translateY(0) rotate(0deg);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(100vh) rotate(720deg);
-    opacity: 0;
-  }
+  background: rgba(236, 197, 115, 0.4);
 }

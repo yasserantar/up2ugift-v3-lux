@@ -1,23 +1,23 @@
 import type { Metadata } from "next";
-import { Cairo, Inter } from "next/font/google";
+import { IBM_Plex_Sans_Arabic, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/context/LanguageContext";
 
-const cairo = Cairo({
+const ibmArabic = IBM_Plex_Sans_Arabic({
   subsets: ["arabic"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-  variable: "--font-cairo",
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-arabic",
 });
 
-const inter = Inter({
+const dmSans = DM_Sans({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-inter",
+  weight: ["400", "500", "700"],
+  variable: "--font-sans",
 });
 
 export const metadata: Metadata = {
-  title: "Up2UGift | هدايا تصنع الفرح",
-  description: "منصة إهداء تصنع البهجة في لحظات من تحب",
+  title: "Up2UGift | تجربة الإهداء الرقمي الفاخرة",
+  description: "الجيل الاستثنائي من الهدايا الرقمية والتفاعلية التي تصنع البهجة في لحظات من تحب",
 };
 
 export default function RootLayout({
@@ -26,8 +26,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar">
-      <body className={`${cairo.variable} ${inter.variable} antialiased selection:bg-amber-500/30`}>
+    <html lang="ar" dir="rtl">
+      <body className={`${ibmArabic.variable} ${dmSans.variable} font-sans antialiased selection:bg-[#ecc573]/30 selection:text-white`}>
         <LanguageProvider>
           {children}
         </LanguageProvider>
