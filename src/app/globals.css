@@ -5,20 +5,20 @@
     --font-arabic: 'IBM Plex Sans Arabic', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 
-    /* Abdul Osama Luxury Color Palette */
-    --bg-ink: #07051c;
-    --bg-ink-card: rgba(16, 12, 44, 0.85);
-    --border-luxury: rgba(236, 197, 115, 0.22);
-    --border-subtle: rgba(255, 255, 255, 0.08);
+    /* Joyful Luxury Palette: Deep Ink, Radiant Rose, Gold, Electric Cyan & Royal Emerald */
+    --bg-ink: #080417;
+    --bg-ink-card: rgba(18, 10, 48, 0.85);
+    --border-luxury: rgba(245, 197, 99, 0.28);
+    --border-gold: rgba(245, 197, 99, 0.35);
 
-    --color-gold: #ecc573;
-    --color-gold-hover: #dfb256;
-    --color-indigo: #1f0a52;
-    --color-violet: #5526e0;
-    --color-salmon: #fc7164;
-    --color-cyan: #34e0e8;
-    --color-mint: #3ce0a6;
-    --color-paper: #fcfbf8;
+    --color-gold: #f5c563;
+    --color-rose: #f43f5e;
+    --color-magenta: #e11d48;
+    --color-violet: #7c3aed;
+    --color-indigo: #4338ca;
+    --color-cyan: #06b6d4;
+    --color-emerald: #10b981;
+    --color-paper: #fffefc;
   }
 }
 
@@ -34,10 +34,10 @@ body {
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
   position: relative;
-  font-weight: 400; /* Strict regular body text */
+  font-weight: 400;
 }
 
-/* Luxury Glowing Background Mesh inspired by abdulosama.com */
+/* Joyful Festive Background Mesh with warm magenta, gold & royal violet glows */
 body::before {
   content: "";
   position: fixed;
@@ -47,22 +47,22 @@ body::before {
   height: 100%;
   z-index: -10;
   background: 
-    radial-gradient(circle at 15% 15%, rgba(31, 10, 82, 0.55) 0%, transparent 50%),
-    radial-gradient(circle at 85% 20%, rgba(85, 38, 224, 0.3) 0%, transparent 45%),
-    radial-gradient(circle at 50% 60%, rgba(252, 113, 100, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 80% 85%, rgba(236, 197, 115, 0.12) 0%, transparent 40%),
-    radial-gradient(circle at 20% 80%, rgba(52, 224, 232, 0.10) 0%, transparent 50%);
-  filter: blur(55px);
+    radial-gradient(circle at 10% 20%, rgba(225, 29, 72, 0.22) 0%, transparent 45%),
+    radial-gradient(circle at 90% 15%, rgba(124, 58, 237, 0.30) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(245, 197, 99, 0.16) 0%, transparent 50%),
+    radial-gradient(circle at 85% 85%, rgba(244, 63, 94, 0.20) 0%, transparent 40%),
+    radial-gradient(circle at 15% 80%, rgba(6, 182, 212, 0.14) 0%, transparent 50%);
+  filter: blur(50px);
   pointer-events: none;
-  animation: floatBackground 12s ease-in-out infinite alternate;
+  animation: joyfulPulse 10s ease-in-out infinite alternate;
 }
 
-@keyframes floatBackground {
-  0% { transform: scale(1) translateY(0); }
-  100% { transform: scale(1.05) translateY(-15px); }
+@keyframes joyfulPulse {
+  0% { transform: scale(1) translateY(0); filter: blur(50px); }
+  100% { transform: scale(1.08) translateY(-10px); filter: blur(40px); }
 }
 
-/* Keyframe Animations */
+/* Animations */
 @keyframes haloFloat {
   0%, 100% { transform: translateY(0px) rotate(0deg); }
   50% { transform: translateY(-10px) rotate(2deg); }
@@ -74,8 +74,8 @@ body::before {
 }
 
 @keyframes pulseGlow {
-  0%, 100% { opacity: 0.6; transform: scale(1); }
-  50% { opacity: 0.95; transform: scale(1.04); }
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.03); }
 }
 
 @keyframes shimmerText {
@@ -84,7 +84,7 @@ body::before {
 }
 
 .animate-halo {
-  animation: haloFloat 7s ease-in-out infinite;
+  animation: haloFloat 6s ease-in-out infinite;
 }
 
 .animate-chip {
@@ -92,85 +92,85 @@ body::before {
 }
 
 .animate-pulse-glow {
-  animation: pulseGlow 3.5s ease-in-out infinite;
+  animation: pulseGlow 3s ease-in-out infinite;
 }
 
 /* Glassmorphism Panel */
 .glass-panel {
   background: var(--bg-ink-card);
-  backdrop-filter: blur(32px) saturate(200%);
-  -webkit-backdrop-filter: blur(32px) saturate(200%);
-  border: 1px solid var(--border-luxury);
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.15);
-  border-radius: 2rem;
+  backdrop-filter: blur(32px) saturate(210%);
+  -webkit-backdrop-filter: blur(32px) saturate(210%);
+  border: 1.5px solid var(--border-luxury);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.8), 0 0 40px rgba(245, 197, 99, 0.12);
+  border-radius: 2.25rem;
 }
 
 /* Luxury Input Fields */
 .premium-input {
-  background: rgba(7, 5, 28, 0.75);
-  border: 1.5px solid rgba(236, 197, 115, 0.2);
-  color: #fcfbf8;
-  border-radius: 1rem;
+  background: rgba(8, 4, 23, 0.8);
+  border: 1.5px solid rgba(245, 197, 99, 0.22);
+  color: #fffefc;
+  border-radius: 1.25rem;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   font-weight: 400;
   font-size: 0.875rem;
 }
 
 .premium-input:focus {
-  background: rgba(7, 5, 28, 0.95);
-  border-color: #ecc573;
-  box-shadow: 0 0 0 4px rgba(236, 197, 115, 0.18);
+  background: rgba(8, 4, 23, 0.95);
+  border-color: #f5c563;
+  box-shadow: 0 0 0 4px rgba(245, 197, 99, 0.2);
   outline: none;
 }
 
 /* Card Hover Effects */
 .occasion-card, .category-card {
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  border: 1.5px solid rgba(255, 255, 255, 0.06);
-  background: rgba(16, 12, 44, 0.6);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  background: rgba(18, 10, 48, 0.65);
 }
 
 .occasion-card:hover, .category-card:hover {
-  transform: translateY(-5px) scale(1.02);
-  background: rgba(236, 197, 115, 0.10);
-  border-color: rgba(236, 197, 115, 0.4);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(236, 197, 115, 0.2);
+  transform: translateY(-6px) scale(1.02);
+  background: rgba(245, 197, 99, 0.12);
+  border-color: rgba(245, 197, 99, 0.45);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.65), 0 0 30px rgba(245, 197, 99, 0.25);
 }
 
 /* Luxury Gradient Text */
 .luxury-gradient-text {
-  background: linear-gradient(135deg, #ecc573 0%, #fc7164 45%, #5526e0 100%);
+  background: linear-gradient(135deg, #f5c563 0%, #f43f5e 40%, #7c3aed 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: shimmerText 8s linear infinite;
+  animation: shimmerText 6s linear infinite;
 }
 
 .gold-gradient-text {
-  background: linear-gradient(135deg, #ecc573 0%, #dfb256 100%);
+  background: linear-gradient(135deg, #f5c563 0%, #eab308 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .saudi-national-gradient {
-  background: linear-gradient(135deg, #10b981 0%, #ecc573 50%, #059669 100%);
+  background: linear-gradient(135deg, #10b981 0%, #f5c563 50%, #059669 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 /* Buttons */
 .btn-gold {
-  background: linear-gradient(135deg, #ecc573 0%, #dfb256 100%);
-  color: #07051c;
+  background: linear-gradient(135deg, #f5c563 0%, #eab308 100%);
+  color: #080417;
   font-weight: 700;
   border-radius: 9999px;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 10px 25px rgba(236, 197, 115, 0.3);
+  box-shadow: 0 10px 25px rgba(245, 197, 99, 0.35);
 }
 
 .btn-gold:hover {
   filter: brightness(1.1);
-  box-shadow: 0 15px 35px rgba(236, 197, 115, 0.5);
+  box-shadow: 0 15px 35px rgba(245, 197, 99, 0.55);
   transform: translateY(-2px);
 }
 
@@ -186,9 +186,9 @@ body::before {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(236, 197, 115, 0.25);
+  background: rgba(245, 197, 99, 0.3);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(236, 197, 115, 0.45);
+  background: rgba(245, 197, 99, 0.5);
 }
