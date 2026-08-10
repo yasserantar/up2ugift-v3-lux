@@ -26,6 +26,47 @@ interface GiftData {
   category?: string;
 }
 
+function TypewriterText({ text }: { text: string }) {
+  const [displayed, setDisplayed] = React.useState('');
+  React.useEffect(() => {
+    let i = 0;
+    const interval = setInterval(() => {
+      setDisplayed(text.substring(0, i));
+      i++;
+      if (i > text.length) clearInterval(interval);
+    }, 35);
+    return () => clearInterval(interval);
+  }, [text]);
+  return <span>&ldquo;{displayed}&rdquo;</span>;
+}
+
+const playMagicSound = () => {
+  try {
+    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+
+    const playChime = (freq: number, time: number, vol: number) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, ctx.currentTime + time);
+      gain.gain.setValueAtTime(0, ctx.currentTime + time);
+      gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + time + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + time + 2);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(ctx.currentTime + time);
+      osc.stop(ctx.currentTime + time + 2);
+    };
+
+    [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98, 2093.00].forEach((freq, i) => {
+      playChime(freq, i * 0.08, 0.25 - (i * 0.02));
+    });
+    playChime(130.81, 0, 0.3);
+  } catch {}
+};
+
 export default function GiftInteractiveClient({ giftData }: { giftData: GiftData }) {
   const { lang, t } = useLanguage();
   const isRtl = lang === "ar";
@@ -102,6 +143,7 @@ export default function GiftInteractiveClient({ giftData }: { giftData: GiftData
             
             <div className="w-full h-64 flex items-center justify-center">
               <GiftBox onOpen={() => {
+                playMagicSound();
                 triggerConfetti();
                 setTimeout(() => setStep(2), 1200);
               }} />
@@ -128,7 +170,7 @@ export default function GiftInteractiveClient({ giftData }: { giftData: GiftData
               <div className="absolute top-0 left-0 w-full h-[4px] bg-gradient-to-r from-[#ecc573] via-pink-500 to-[#ecc573]"></div>
               
               <p className="text-stone-100 text-lg md:text-xl leading-relaxed font-bold italic pt-2">
-                &ldquo;{giftData.message}&rdquo;
+                <TypewriterText text={giftData.message} />
               </p>
               
               <div className="mt-6 flex justify-end w-full">
